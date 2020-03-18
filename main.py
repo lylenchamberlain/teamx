@@ -2,7 +2,7 @@ from Classes.World import World
 
 
 
-
+#Change on Computer
 myWorld = World()
 
 print(myWorld.Edges)
