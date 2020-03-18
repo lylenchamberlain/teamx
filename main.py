@@ -7,7 +7,7 @@ myWorld = World()
 
 print(myWorld.Edges)
 
-print myWorld.Verticies
+print(myWorld.Verticies)
 
 
 myWorld.runSimulation(10)
