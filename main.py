@@ -9,6 +9,7 @@ print(myWorld.Edges)
 
 print(myWorld.Verticies)
 
+print(myWorld.Edges)
 
 myWorld.runSimulation(10)
 #Change
