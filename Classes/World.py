@@ -51,7 +51,16 @@ class World(AbstractWorld):
 			'''
      
 			pygame.display.update()	
+			gameExit = False
+			
 			for event in pygame.event.get():
-				pass   
+				
+				if event.type == pygame.QUIT:
+					gameExit = True
+					pygame.quit()
+					
+				
+				
 			self.clock.tick(fps)
-        
+			if gameExit == True:
+				break
