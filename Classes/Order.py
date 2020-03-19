@@ -1,5 +1,5 @@
 
-from AbstractOrder import AbstractOrder
+from Classes.AbstractOrder import AbstractOrder
 
 class Order(AbstractOrder):
 	

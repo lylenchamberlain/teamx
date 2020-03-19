@@ -23,18 +23,18 @@ class World(AbstractWorld):
 		'''
 		trucks = self.getInitialTruckLocations()
 		for i,t in enumerate(trucks):
-			print "vehicle %d: %s"%(i, str(t)) 
+			print("vehicle %d: %s"%(i, str(t)))
 
 		'''
 		We will run a simulation where "t" is the time index
 		'''
-		for t in xrange(initialTime,finalTime):	
-			print "\n\n Time: %02d:%02d"%(t/60, t%60)
+		for t in range(initialTime,finalTime):	
+			print("\n\n Time: %02d:%02d"%(t/60, t%60))
 			# each minute we can get a few new orders
 			newOrders = self.getNewOrdersForGivenTime(t)
-			print "New orders:"  
+			print("New orders:")
 			for c in newOrders:
-				print c
+				print(c)
 			
 			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
 			textrect = text.get_rect()

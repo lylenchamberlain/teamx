@@ -1,4 +1,4 @@
-from AbstractVehicle import AbstractVehicle
+from Classes.AbstractVehicle import AbstractVehicle
 
 class Vehicle(AbstractVehicle):
 	
