@@ -4,26 +4,37 @@ import networkx as nx
 import plotly.graph_objects as go
 
 
-#Change for Shrivats
-#Change on Computer
+
+class edgeClass():
+    
+    def  __init__(self, tempArray):
+        self.x = tempArray[0]
+        self.y = tempArray[1]
+        self.z = tempArray[2]
+        
+
+
+
+
+
 myWorld = World()
 
 edgeText = open('SF_edges.txt','r')
 
-'''
-edge_x = []
-edge_y = []
-for edge in edgeText.edges():
-    x0, y0 = G.nodes[edge[0]]['pos']
-    x1, y1 = G.nodes[edge[1]]['pos']
-    edge_x.append(x0)
-    edge_x.append(x1)
-    edge_x.append(None)
-    edge_y.append(y0)
-    edge_y.append(y1)
-    edge_y.append(None)
-'''
 
+#We might not need any of this due to the pickle file
+#Array of edge instances
+edgeArray = []
+for line in edgeText:
+    
+    #Split elements of edges into arrays
+    tempArray = (line.split(","))
+    tempArray[-1] = int(tempArray[-1].strip())
+    tempArray[0] = int(tempArray[0])
+    tempArray[1] = int(tempArray[1])
+    newAddition = edgeClass(tempArray)
+    edgeArray.append(newAddition)
+    print(tempArray)
 
 
 print(myWorld.Verticies)
@@ -31,7 +42,4 @@ print(myWorld.Verticies)
 print(myWorld.Edges)
 
 myWorld.runSimulation(10)
-
-
-
 
