@@ -42,10 +42,16 @@ class World(AbstractWorld):
 			textrect.centery = 30
 			self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
- 
+ 			
+			print("SELF>Vertices", self.Verticies)
+			#print Vertices
+			for item in range(len(self.Verticies)):
+				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],6,6))
+
+			
 			
 			'''
-			You should plot the vetricies, edges and cars and customers
+			You should plot the vetrices, edges and cars and customers
 			Each time, cars will move and you should visualize it 
 			accordingly
 			'''

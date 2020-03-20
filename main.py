@@ -4,7 +4,7 @@ import networkx as nx
 import plotly.graph_objects as go
 
 
-###HI ODI
+###We probably do not need this class.
 class edgeClass():
     
     def  __init__(self, tempArray):
