@@ -43,12 +43,27 @@ class World(AbstractWorld):
 			self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
  			
-			print("SELF>Vertices", self.Verticies)
+			print("Verticies" , self.Verticies)
+
+			print("Edges", self.Edges)
+			
 			#print Vertices
 			for item in range(len(self.Verticies)):
-				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],6,6))
+				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+				#print(self.Verticies[item])
 
-			
+
+
+			for x in range(len(self.Edges)):
+				
+				#Iterate through all the points of path
+				for y in range(len(self.Edges[x][3]) - 1):
+					
+					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+
+				
+
+	
 			
 			'''
 			You should plot the vetrices, edges and cars and customers
