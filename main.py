@@ -3,7 +3,7 @@ from Graph import Graph
 import random
 import networkx as nx
 import plotly.graph_objects as go
-from Graph import shortestPath
+#from Graph import shortestPath
 
 
 myWorld = World()
@@ -19,6 +19,7 @@ edgeGraph = Graph()
 for x in range(len(myWorld.Edges)):
     Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2])
     
+    
 #Random test for shortest path
 testValue1 = 1
 testValue2 = 1
@@ -30,7 +31,7 @@ while testValue1 == testValue2:
 firstNode = testValue1[0]
 secondNode = testValue2[0]
 
-Graph.shortestPath(edgeGraph,firstNode,secondNode)
+Graph.shortest_path(edgeGraph,firstNode,secondNode)
 
 
 

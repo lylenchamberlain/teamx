@@ -43,9 +43,9 @@ class World(AbstractWorld):
 			self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
  			
-			print("Verticies" , self.Verticies)
+			#print("Verticies" , self.Verticies)
 
-			print("Edges", self.Edges)
+			#print("Edges", self.Edges)
 			
 			#print Vertices
 			for item in range(len(self.Verticies)):

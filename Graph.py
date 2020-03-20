@@ -19,11 +19,11 @@ class Graph:
       self.neighbors[v].append(u)
       self.cost[(u,v)] = c
       
-    def shortestPath(self, startNode, endNode):
+  def shortest_path(self, start_node, end_node):
        
         # let's implement the shortest path algorithm
         d = {} # this will store the "distances from start_node"
-        for v in g.neighbors:
+        for v in self.neighbors:
           d[v] = np.Inf
         d[start_node] = 0
         
@@ -38,12 +38,19 @@ class Graph:
               smallest_value = d[v]
               smallest_node = v
           permanent[smallest_node] = True # I am denoting this node with smallest d[v] value as "final" / permanent
-          for nv in g.neighbors[smallest_node]: # checking neighbours of "smallest_node" ....
+          for nv in self.neighbors[smallest_node]: # checking neighbours of "smallest_node" ....
             if nv not in permanent:  # Question #2: is this check "important"? Would it work if I remove it? 
-              proposed_distance = d[smallest_node] + g.get_cost(smallest_node, nv)
+              proposed_distance = d[smallest_node] + self.get_cost(smallest_node, nv)
               if proposed_distance < d[nv]: # if new path via node smallest_node is better, update "d"
                 d[nv] = proposed_distance
                 pre[nv] = smallest_node
             
-            
+    
+  def get_cost(self, u,v):
+        if u > v:
+            u, v = v, u
+        if (u,v) in self.cost:
+           return self.cost[(u,v)]
+        return None
+        
 
