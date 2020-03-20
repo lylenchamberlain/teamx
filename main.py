@@ -30,6 +30,9 @@ while testValue1 == testValue2:
 
 firstNode = testValue1[0]
 secondNode = testValue2[0]
+#This is just for consistency
+firstNode = myWorld.Verticies[0][0]
+secondNode = myWorld.Verticies[1][0]
 
 Graph.shortest_path(edgeGraph,firstNode,secondNode)
 

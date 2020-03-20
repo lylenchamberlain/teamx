@@ -44,6 +44,7 @@ class Graph:
               if proposed_distance < d[nv]: # if new path via node smallest_node is better, update "d"
                 d[nv] = proposed_distance
                 pre[nv] = smallest_node
+      
             
     
   def get_cost(self, u,v):
