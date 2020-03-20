@@ -53,9 +53,7 @@ class World(AbstractWorld):
 				#print(self.Verticies[item])
 
 
-
 			for x in range(len(self.Edges)):
-				
 				#Iterate through all the points of path
 				for y in range(len(self.Edges[x][3]) - 1):
 					
