@@ -22,7 +22,7 @@ class AbstractWorld:
 		self.Verticies=[]
 		for v in VF:
 			self.Verticies.append(  [ v,float(VF[v][0]),float(VF[v][1])]  )	
-			print("v ", v, "float(VF[v][0])", float(VF[v][0])	, " last value ", float(VF[v][1]))
+			#print("v ", v, "float(VF[v][0])", float(VF[v][0])	, " last value ", float(VF[v][1]))
 		 
 		
 		self.v = [v[0] for v in self.Verticies]
