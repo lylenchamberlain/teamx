@@ -8,6 +8,7 @@ class Graph:
     self.cost = {}  # key - edge, value - cost
 
   def add_edge(self,u,v,c): #this will add edge (u,v) with cost "c" to the graph
+    #print("u ", u, "v ", v, "c ", c )
     if u not in self.neighbors:
       self.neighbors[u]=[]
     if v not in self.neighbors:
@@ -16,6 +17,8 @@ class Graph:
       u, v = v, u
     if (u,v) not in self.cost:
       self.neighbors[u].append(v)
+      print("DUSTBOWL", self.neighbors[u])
+
       self.neighbors[v].append(u)
       self.cost[(u,v)] = c
       
@@ -44,8 +47,11 @@ class Graph:
               if proposed_distance < d[nv]: # if new path via node smallest_node is better, update "d"
                 d[nv] = proposed_distance
                 pre[nv] = smallest_node
+                
+                
+        print("PLEAZE", Graph.get_cost(self, start_node, end_node))
       
-            
+        
     
   def get_cost(self, u,v):
         if u > v:

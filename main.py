@@ -5,6 +5,7 @@ import networkx as nx
 import plotly.graph_objects as go
 #from Graph import shortestPath
 
+#Wow I hope this works
 
 myWorld = World()
 
@@ -28,8 +29,12 @@ while testValue1 == testValue2:
     testValue1 = random.choice(myWorld.Verticies)
     testValue2 = random.choice(myWorld.Verticies)
 
+
+
 firstNode = testValue1[0]
 secondNode = testValue2[0]
+print("FIRSTN NODE = ", firstNode)
+print("SECOND NODE = ", secondNode)
 #This is just for consistency
 firstNode = myWorld.Verticies[0][0]
 secondNode = myWorld.Verticies[1][0]
