@@ -6,12 +6,8 @@ import plotly.graph_objects as go
 #from Graph import shortestPath
 
 #Wow I hope this works
-<<<<<<< HEAD
 #I think it does
 #let me try this
-=======
-#Lyle says hi
->>>>>>> branch 'Lyle' of https://github.com/lylenchamberlain/teamx.git
 
 myWorld = World()
 
