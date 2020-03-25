@@ -11,3 +11,4 @@ class AbstractVehicle:
 		
 	def __str__(self):
 		return str(self.ID)+ " at " + str(self.currentPossition[1])+" capacity "+str(self.capacity)+"tons type "+self.type
+		#return self.

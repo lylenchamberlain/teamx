@@ -50,11 +50,20 @@ class Graph:
                 
                 
                 
-        print("self.Neighbors HH", self.neighbors)
-        print("self.cost HH", self.cost)
+        return Graph.findPath(start_node, end_node, pre)
        
       
         
+  def findPath(fromV, toV, pre):
+      path = [toV]
+      n = None
+      while n != fromV:
+        n = pre[toV]
+        path.insert(0,n)
+        toV = n
+      return path
+
+
     
   def get_cost(self, u,v):
         if u > v:

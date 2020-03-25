@@ -33,6 +33,7 @@ class World(AbstractWorld):
 			# each minute we can get a few new orders
 			newOrders = self.getNewOrdersForGivenTime(t)
 			print("New orders:")
+			#Let's graph the truck movements here
 			for c in newOrders:
 				print(c)
 			
@@ -43,10 +44,8 @@ class World(AbstractWorld):
 			self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
  			
-			#print("Verticies" , self.Verticies)
 
-			#print("Edges", self.Edges)
-			
+			#This is our print
 			#print Vertices
 			for item in range(len(self.Verticies)):
 				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
@@ -56,10 +55,11 @@ class World(AbstractWorld):
 			for x in range(len(self.Edges)):
 				#Iterate through all the points of path
 				for y in range(len(self.Edges[x][3]) - 1):
-					
 					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
 
-				
+					
+			#Print out red rectangles for trucks
+			print("Our test", trucks[1])
 
 	
 			
