@@ -5,10 +5,6 @@ import networkx as nx
 import plotly.graph_objects as go
 #from Graph import shortestPath
 
-#Wow I hope this works
-#I think it does
-#let me try this
-
 
 myWorld = World()
 
