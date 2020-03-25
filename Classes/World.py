@@ -58,9 +58,27 @@ class World(AbstractWorld):
 					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
 
 					
-			#Print out red rectangles for trucks
-			print("Our test", trucks[1])
+			#Print out red rectangles for trucks just standing still
+			#Initially this is where trucks are
+			speed = [0,40]
+			for x in trucks:
+				
+				for y in self.Verticies:
+				# Find the index of the node position we care about
+					
+					if x.VehicleID == y[0]:
+						x.currentVertex == y[0]
+						pygame.draw.rect(self.screen,(255,0,0),(800*y[1],800*y[2],10,10))
+			
+			ogball = pygame.image.load("C:/Users/Lyle%20Chamberlain/eclipse-workspace/myTruck.png")
+			ballRect = pygame.draw.rect(self.screen,(100,0,100),(500,500,40,40))
+			#ballRect = ball.get_rect()
+			ballRect = ballRect.move(speed)
+			ballRect = ballRect.move(350,350)
+			#self.screen.blit(ballRect)
+					
 
+			#We know the node that the truck is at
 	
 			
 			'''

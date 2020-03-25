@@ -33,7 +33,7 @@ while testValue1 == testValue2:
 #firstNode = testValue1[0]
 #secondNode = testValue2[0]
 #print("Carolines first node", testValue1)
-#print("Caroline confirm", testValue1)
+#print("Caroline confirm", t
 
 #This is Wrong but it runs
 
@@ -50,7 +50,6 @@ while testValue1 == testValue2:
 nodeIdentifier1 = testValue1[0]
 nodeIdentifier2 = testValue2[0]
 ourShortestPath = Graph.shortest_path2(edgeGraph,nodeIdentifier1,  nodeIdentifier2)
-print("OUR SHORTEST PATH IS ", ourShortestPath)
 
 
 

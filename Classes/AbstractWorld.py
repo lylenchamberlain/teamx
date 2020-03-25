@@ -39,6 +39,8 @@ class AbstractWorld:
 				newVehicle.type="Truck"
 				newVehicle.capacity = np.random.randint(3,30)
 				vehicles.append(newVehicle)
+		for i in vehicles:
+			print("MY TEST" , i.ID)		
 		return vehicles
 		
 	def getNewOrdersForGivenTime(self,t):
