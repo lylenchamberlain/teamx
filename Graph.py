@@ -17,12 +17,12 @@ class Graph:
       u, v = v, u
     if (u,v) not in self.cost:
       self.neighbors[u].append(v)
-      print("DUSTBOWL", self.neighbors[u])
-
       self.neighbors[v].append(u)
       self.cost[(u,v)] = c
       
-  def shortest_path(self, start_node, end_node):
+  def shortest_path2(self, start_node, end_node):
+        print("Start_Node", start_node)
+        print("MY end_node", end_node)
        
         # let's implement the shortest path algorithm
         d = {} # this will store the "distances from start_node"
@@ -49,7 +49,10 @@ class Graph:
                 pre[nv] = smallest_node
                 
                 
-        print("PLEAZE", Graph.get_cost(self, start_node, end_node))
+                
+        print("self.Neighbors HH", self.neighbors)
+        print("self.cost HH", self.cost)
+       
       
         
     

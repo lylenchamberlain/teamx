@@ -30,21 +30,32 @@ while testValue1 == testValue2:
 
 
 
-firstNode = testValue1[0]
-secondNode = testValue2[0]
-print("FIRSTN NODE = ", firstNode)
-print("SECOND NODE = ", secondNode)
-#This is just for consistency
-firstNode = myWorld.Verticies[0][0]
-secondNode = myWorld.Verticies[1][0]
+#firstNode = testValue1[0]
+#secondNode = testValue2[0]
+#print("Carolines first node", testValue1)
+#print("Caroline confirm", testValue1)
 
-Graph.shortest_path(edgeGraph,firstNode,secondNode)
+#This is Wrong but it runs
+
+#firstNode = myWorld.Verticies[]
+#secondNode = myWorld.Verticies[random2]
+
+#print("TestValue1 ", testValue1)
+
+#print("FIRST NODE = ", firstNode)
+#print("SECOND NODE = ", secondNode)
+
+#testValue 1 is an array with three values of the vertex
+#The first one is a unique value identifying the node, the next two are x and y coordinates.
+nodeIdentifier1 = testValue1[0]
+nodeIdentifier2 = testValue2[0]
+Graph.shortest_path2(edgeGraph,nodeIdentifier1,  nodeIdentifier2)
 
 
 
-print(myWorld.Verticies)
+print("myWorld.verticies",myWorld.Verticies)
 
-print(myWorld.Edges)
+print("myWorld.edges", myWorld.Edges)
 
 myWorld.runSimulation(10)
 
