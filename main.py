@@ -3,13 +3,13 @@ from Classes.World import World
 import networkx as nx
 import plotly.graph_objects as go
 
-<<<<<<< HEAD
+
 ###check test
 ###We probably do not need this class.
-=======
 #About 8:43 pm
+#Now its a little later.
 
->>>>>>> branch 'master' of https://github.com/lylenchamberlain/teamx.git
+
 class edgeClass():
     
     def  __init__(self, tempArray):
