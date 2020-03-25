@@ -3,9 +3,7 @@ from Graph import Graph
 import random
 import networkx as nx
 import plotly.graph_objects as go
-<<<<<<< HEAD
 #from Graph import shortestPath
-=======
 
 
 ###check test
