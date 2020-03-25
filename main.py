@@ -3,8 +3,8 @@ from Classes.World import World
 import networkx as nx
 import plotly.graph_objects as go
 
-#Hi Jiaming
-###We probably do not need this class.
+#About 8:43 pm
+
 class edgeClass():
     
     def  __init__(self, tempArray):
