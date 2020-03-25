@@ -43,9 +43,15 @@ class World(AbstractWorld):
 			self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
  			
+<<<<<<< HEAD
 			#print("Verticies" , self.Verticies)
 
 			#print("Edges", self.Edges)
+=======
+			print("Verticies" , self.Verticies)
+
+			print("Edges", self.Edges)
+>>>>>>> branch 'master' of https://github.com/lylenchamberlain/teamx.git
 			
 			#print Vertices
 			for item in range(len(self.Verticies)):
@@ -53,7 +59,13 @@ class World(AbstractWorld):
 				#print(self.Verticies[item])
 
 
+<<<<<<< HEAD
 			for x in range(len(self.Edges)):
+=======
+
+			for x in range(len(self.Edges)):
+				
+>>>>>>> branch 'master' of https://github.com/lylenchamberlain/teamx.git
 				#Iterate through all the points of path
 				for y in range(len(self.Edges[x][3]) - 1):
 					
