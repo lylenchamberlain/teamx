@@ -43,6 +43,6 @@ ourShortestPath = Graph.shortest_path2(edgeGraph,nodeIdentifier1,  nodeIdentifie
 print("myWorld.verticies",myWorld.Verticies)
 
 print("myWorld.edges", myWorld.Edges)
-
+myWorld.generateTruckList()
 myWorld.runSimulation(10)
 

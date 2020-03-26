@@ -4,7 +4,7 @@ class Animation:
     #Use this for truck animations
    
     def _init_(self):
-        #Creates trucks
+        '''#Creates trucks
         self.speed = [0,0]
         print("GOGO")
         self.ogball = pygame.image.load("myTrucky.png")
@@ -12,6 +12,8 @@ class Animation:
         self.ballrect = self.ball.get_rect()
         self.ballrect = self.ballrect.move(350,350)
         self.truckList = []
+        '''
+        self.value = 3
         
     
     def generatesRandomVerticies(self):
@@ -43,7 +45,7 @@ class Animation:
         
     
     def nodeToCoordinate(self, node):
-        
+        print("HUH")
         for x in myWorld.verticies:
             if myWorld.verticies[x][0] == node:
                 return (myWorld.verticies[x][1], myWorld.verticies[x][2])
