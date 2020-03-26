@@ -16,6 +16,7 @@ class Animation:
     
     def generatesRandomVerticies(self):
         print("generateIt")
+        return 2
         
     def generateTrucklist(self, trucks):
         
