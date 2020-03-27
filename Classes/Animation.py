@@ -8,20 +8,22 @@ class Animation():
     def determineStartNode(self):
         return 2
     
-    def __init__(self):
+    def __init__(self, startingX, startingY):
         self.value = None
         self.speed = [0,0]
+        self.speedX = 0
+        self.speedY = 0
+        self.startPointX = None
+        self.startPointY = None
         self.ogball = pygame.image.load("myTrucky.png")
         self.ball = pygame.transform.scale(self.ogball,(19,19))
         self.ballrect = self.ball.get_rect()
+        self.ballrect = self.ballrect.move(startingX, startingY)
         self.startingFirstNode = 17
         randomValue = random.randrange( 100,400)
-        self.ballrect = self.ballrect.move(randomValue,randomValue)
         self.truckList = []
-        self.speedX = 0
-        self.speedY = 0
-        self.startPointX = 0
-        self.startPointY = 0
+
+
         
         
 

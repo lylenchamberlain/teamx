@@ -23,28 +23,34 @@ class World(AbstractWorld):
 
 		#Create initial animation objects
 		self.truckList = []
-		x = 0
+		zz = 0
 		for i in self.trucks:
+			'''we moved this to the end
 			myAnimate = Animation()
 			self.truckList.append(myAnimate)
+			'''
 			#self.truckList[x].value = x
 			#i current position should enter node its at
+			
 			#Determine node that it start at initially
 			#For now we'll give it a random starting node
-			newRandom = x * 20
+			 
 			#x = x + 1
-			
+			print("Truck ", i.VehicleID)
 			#Determine coordinates of that node
 			for x in self.Verticies:
-				print("myTest", self.Verticies[0][0])
-				if x[0] == newRandom:
-					pass
-					#i.startPointX(self.Verticies[x][0])
-					#i.startPointY(self.Verticies[x][1])
-					#self.truckList[x].startPoints = (self.Verticies[x][1],self.Verticies[x][2])
+				#This is the Vertex the truck starts at
+				startingNode = i.currentVertex
+				#print("myTest", x[1])
+				if x[0] == startingNode:
+					startingX = x[1] * 800
+					startingY = x[2] * 800
+					break
 
 					
-			
+			myAnimate = Animation(startingX, startingY)
+			self.truckList.append(myAnimate)
+			zz = zz + 1
 			
 
 				#print("FINAL lsit", self.truckList)
@@ -126,7 +132,7 @@ class World(AbstractWorld):
 			
 			#list of verticies
 			pleaseVert = self.Verticies
-
+			print(pleaseVert, "please Vert")
 			#Print out all in truckList
 			#Prints out all the speeds
 			for t in self.truckList:
