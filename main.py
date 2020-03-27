@@ -20,7 +20,7 @@ edgeGraph = Graph()
 
 #Adds edges
 for x in range(len(myWorld.Edges)):
-    Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2])
+    Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2], myWorld.Edges)
     
     #Delete this comment
 
@@ -42,7 +42,7 @@ while testValue1 == testValue2:
 #The first one is a unique value identifying the node, the next two are x and y coordinates.
 nodeIdentifier1 = testValue1[0]
 nodeIdentifier2 = testValue2[0]
-ourShortestPath = Graph.shortest_path2(edgeGraph,nodeIdentifier1,  nodeIdentifier2)
+ourShortestPath = Graph.shortest_path2(edgeGraph,nodeIdentifier1,  nodeIdentifier2, myWorld.Edges)
 
 
 

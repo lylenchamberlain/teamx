@@ -7,7 +7,7 @@ class Graph:
     self.neighbors = {} # key - node, value - list of neighbours 
     self.cost = {}  # key - edge, value - cost
 
-  def add_edge(self,u,v,c): #this will add edge (u,v) with cost "c" to the graph
+  def add_edge(self,u,v,c, worldEdges): #this will add edge (u,v) with cost "c" to the graph
     #print("u ", u, "v ", v, "c ", c )
     if u not in self.neighbors:
       self.neighbors[u]=[]
@@ -20,9 +20,14 @@ class Graph:
       self.neighbors[v].append(u)
       self.cost[(u,v)] = c
       
-  def shortest_path2(self, start_node, end_node):
+  def shortest_path2(self, start_node, end_node, worldEdges):
         print("Start_Node", start_node)
         print("MY end_node", end_node)
+       
+        #for x in range(len(myWorld.Edges)):
+           #self.add_edge(self, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2], worldEdges)
+        for x in range(len(worldEdges)):
+            self.add_edge(worldEdges[x][0], worldEdges[x][1], worldEdges[x][2], worldEdges)
        
         # let's implement the shortest path algorithm
         d = {} # this will store the "distances from start_node"

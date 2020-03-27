@@ -3,6 +3,7 @@ from Classes.Animation import Animation
 
 import pygame
 import random
+from Graph import Graph
 from array import array
 pygame.font.init() 
 #from Animation import Animation
@@ -36,7 +37,7 @@ class World(AbstractWorld):
 			#For now we'll give it a random starting node
 			 
 			#x = x + 1
-			print("Truck ", i.VehicleID)
+
 			#Determine coordinates of that node
 			for x in self.Verticies:
 				#This is the Vertex the truck starts at
@@ -83,15 +84,12 @@ class World(AbstractWorld):
 			print("vehicle %d: %s"%(i, str(t)))
 			
 			
-		print("****", self.Edges[0])
+		print("****", self.Edges)
 
 
-			#This is test that truckList works
-		for i in self.truckList:
-			print("MYMY value ")#, i.value)
-			'''
-			We will run a simulation where "t" is the time index
-			'''
+		'''
+		We will run a simulation where "t" is the time index
+		'''
 		for t in range(initialTime,finalTime):	
 			print("\n\n Time: %02d:%02d"%(t/60, t%60))
 			# each minute we can get a few new orders
@@ -122,13 +120,13 @@ class World(AbstractWorld):
 				for y in range(len(self.Edges[x][3]) - 1):
 					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
 
-
+			#Get a list of the shortest path
+			myShortest = []
+			print("ERE")
+			graphObject = Graph()
+			myShortest = graphObject.shortest_path2(1,2, self.Edges)
+			print("Myshoertes", myShortest)
 			
-			#Lets try printing all our trucks, this is an example
-			#self.ballrect = self.ballrect.move(self.speedX, self.speedY)
-			
-			#This moves the truck at a speed
-			#self.screen.blit(self.ball,self.ballrect)
 			
 			#list of verticies
 			pleaseVert = self.Verticies
@@ -136,9 +134,10 @@ class World(AbstractWorld):
 			#Print out all in truckList
 			#Prints out all the speeds
 			for t in self.truckList:
-				
-				newSpeed = World.createSpeed(t, t.startingFirstNode, 40, pleaseVert)
+				''''''
+				#newSpeed = World.createSpeed(t, t.startingFirstNode, 40, pleaseVert)
 				#Takes the speed output from the create speed method
+				newSpeed = [0,0]
 				t.speedX = newSpeed[0]
 				t.speedY = newSpeed[1]
 				t.ballrect = t.ballrect.move(t.speedX, t.speedY)
@@ -148,7 +147,7 @@ class World(AbstractWorld):
 
 			#I don't know what this does
 			for x in self.trucks:
-				
+			
 				for y in self.Verticies:
 				# Find the index of the node position we care about
 					
