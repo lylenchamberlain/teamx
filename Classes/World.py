@@ -74,7 +74,6 @@ class World(AbstractWorld):
 			print("vehicle %d: %s"%(i, str(t)))
 			
 			
-		print("****", self.Edges)
 
 
 		'''
@@ -115,7 +114,7 @@ class World(AbstractWorld):
 			myShortest = []
 
 			graphObject = Graph()
-			myShortest = graphObject.shortest_path2(1,2, self.Edges)
+			#myShortest = graphObject.shortest_path2(1,2, self.Edges)
 			
 			#Eventually this should go into for loop, but lets test it
 			self.truckList[0].finalNodeDestination = 2
@@ -126,11 +125,11 @@ class World(AbstractWorld):
 			self.truckList[0].currentPath = graphObject.shortest_path2(37,1, self.Edges)
 			self.truckList[0].currentPath2 = graphObject.shortest_path2(1,2,self.Edges)
 
-			
+			#This test works perfectly for one instance of truckList, I will now be implementing it to all the trucks in truckList by using a for loops
 			#Just for a test we want to make sure it moves
 			if self.truckList[0].nextMoveTime == 0:
 				#This should be t + 60 but we're gonna shorten it
-				self.truckList[0].nextMoveTime = t + 6
+				self.truckList[0].nextMoveTime = t + 60
 			
 			
 			print("CurrentNode ", self.truckList[0].currentNode)
@@ -151,7 +150,7 @@ class World(AbstractWorld):
 				self.truckList[0].counter = self.truckList[0].counter + 1
 				#This sets the move time again 
 				#This should be t + 60 but for time purposes we shortened it
-				self.truckList[0].nextMoveTime = t + 8
+				self.truckList[0].nextMoveTime = t + 60
 				#Test if we're at end of the current path that we're folllowing by checking if at last element
 				if self.truckList[0].currentNode == self.truckList[0].currentPath[len(self.truckList[0].currentPath) - 1]:
 					
@@ -176,10 +175,9 @@ class World(AbstractWorld):
 					print("Counter = ", self.truckList[0].counter)
 					self.truckList[0].currentNode = self.truckList[0].currentPath[self.truckList[0].counter]
 			#End of test		
-			
+			#'''
 			#list of verticies
 			pleaseVert = self.Verticies
-			print(pleaseVert, "please Vert")
 			#Print out all in truckList
 			#Prints out all the speeds
 			for t in self.truckList:
