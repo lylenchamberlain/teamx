@@ -22,6 +22,7 @@ edgeGraph = Graph()
 for x in range(len(myWorld.Edges)):
     Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2])
     
+    #Delete this comment
 
 #print("VALUE", mainAnimationObject.value)
     
