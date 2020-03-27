@@ -27,7 +27,7 @@ class World(AbstractWorld):
 		for i in self.trucks:
 			myAnimate = Animation()
 			self.truckList.append(myAnimate)
-			self.truckList[x].value = x
+			#self.truckList[x].value = x
 			#i current position should enter node its at
 			#Determine node that it start at initially
 			#For now we'll give it a random starting node
