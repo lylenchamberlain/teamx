@@ -119,7 +119,7 @@ class World(AbstractWorld):
 			
 			#Eventually this should go into for loop, but lets test it
 			self.truckList[0].finalNodeDestination = 2
-			self.truckList[0].destination = 2
+			self.truckList[0].nodeDestination = 1
 			self.truckList[0].currentPath = graphObject.shortest_path2(1,2, self.Edges)
 			
 			#We need to always first make a path from where it is to vertex
@@ -133,34 +133,37 @@ class World(AbstractWorld):
 				self.truckList[0].nextMoveTime = t + 6
 			
 			
-			print("ERE ", self.truckList[0].currentNode)
-			print("SHORTY ", self.truckList[0].currentPath)
-			print("TTT", t, self.truckList[0].nextMoveTime)
+			print("CurrentNode ", self.truckList[0].currentNode)
+			print("Current Time and Time when I should move ", t, self.truckList[0].nextMoveTime)
+
 			
 			#If we're at the start node we need a new path
 			if self.truckList[0].status == 2:
 				self.truckList[0].currentPath = self.truckList[0].currentPath2
+
+			print("Current Path ", self.truckList[0].currentPath)
+
 			
 			
 			#Decide if a minute has passed
-			if t == self.truckList[0].nextMoveTime:
+			if t == self.truckList[0].nextMoveTime and self.truckList[0].status != 4:
 				#This counter tells us where we are at in the array
 				self.truckList[0].counter = self.truckList[0].counter + 1
 				#This sets the move time again 
 				#This should be t + 60 but for time purposes we shortened it
 				self.truckList[0].nextMoveTime = t + 8
-				#Test if we're at end of the path
-				if self.truckList[0].currentNode == self.truckList[0].nodeDestination:
+				#Test if we're at end of the current path that we're folllowing by checking if at last element
+				if self.truckList[0].currentNode == self.truckList[0].currentPath[len(self.truckList[0].currentPath) - 1]:
 					
 					#check if we're where we want to be
 					if self.truckList[0].currentNode ==  self.truckList[0].finalNodeDestination:
-						nextMoveTime = 0
+						self.truckList[0].nextMoveTime = 0
 						#status of 4 means done
 						self.truckList[0].status = 4
 					#This means we're at the start node and need to go to end node
 					else:
 						#We're gonna have to make a path from currentVertex to final node destination
-						self.truckList[0].currentPath = graphObject.shortestPath(22,3,self.Edges)
+						self.truckList[0].currentPath = graphObject.shortest_path2(1,2,self.Edges)
 						#status of 2 means at start node
 						self.truckList[0].status = 2
 						print(" Changed status to 2")
@@ -170,7 +173,7 @@ class World(AbstractWorld):
 						
 				#If we're still traveling on the same path
 				else:
-					print("Counter = ", self.truckList[0].coounter)
+					print("Counter = ", self.truckList[0].counter)
 					self.truckList[0].currentNode = self.truckList[0].currentPath[self.truckList[0].counter]
 			#End of test		
 			

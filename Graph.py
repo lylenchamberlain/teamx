@@ -21,9 +21,7 @@ class Graph:
       self.cost[(u,v)] = c
       
   def shortest_path2(self, start_node, end_node, worldEdges):
-        print("Start_Node", start_node)
-        print("MY end_node", end_node)
-       
+
         #for x in range(len(myWorld.Edges)):
            #self.add_edge(self, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2], worldEdges)
         for x in range(len(worldEdges)):
