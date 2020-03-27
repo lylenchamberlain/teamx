@@ -26,22 +26,12 @@ class World(AbstractWorld):
 		self.truckList = []
 		zz = 0
 		for i in self.trucks:
-			'''we moved this to the end
-			myAnimate = Animation()
-			self.truckList.append(myAnimate)
-			'''
-			#self.truckList[x].value = x
-			#i current position should enter node its at
-			
-			#Determine node that it start at initially
-			#For now we'll give it a random starting node
-			 
-			#x = x + 1
 
 			#Determine coordinates of that node
 			for x in self.Verticies:
 				#This is the Vertex the truck starts at
 				startingNode = i.currentVertex
+				currentVertex = i.currentVertex
 				#print("myTest", x[1])
 				if x[0] == startingNode:
 					startingX = x[1] * 800
@@ -49,7 +39,7 @@ class World(AbstractWorld):
 					break
 
 					
-			myAnimate = Animation(startingX, startingY)
+			myAnimate = Animation(startingX, startingY, currentVertex)
 			self.truckList.append(myAnimate)
 			zz = zz + 1
 			
@@ -92,6 +82,7 @@ class World(AbstractWorld):
 		'''
 		for t in range(initialTime,finalTime):	
 			print("\n\n Time: %02d:%02d"%(t/60, t%60))
+
 			# each minute we can get a few new orders
 			newOrders = self.getNewOrdersForGivenTime(t)
 			print("New orders:")
@@ -122,11 +113,66 @@ class World(AbstractWorld):
 
 			#Get a list of the shortest path
 			myShortest = []
-			print("ERE")
+
 			graphObject = Graph()
 			myShortest = graphObject.shortest_path2(1,2, self.Edges)
-			print("Myshoertes", myShortest)
 			
+			#Eventually this should go into for loop, but lets test it
+			self.truckList[0].finalNodeDestination = 2
+			self.truckList[0].destination = 2
+			self.truckList[0].currentPath = graphObject.shortest_path2(1,2, self.Edges)
+			
+			#We need to always first make a path from where it is to vertex
+			self.truckList[0].currentPath = graphObject.shortest_path2(37,1, self.Edges)
+			self.truckList[0].currentPath2 = graphObject.shortest_path2(1,2,self.Edges)
+
+			
+			#Just for a test we want to make sure it moves
+			if self.truckList[0].nextMoveTime == 0:
+				#This should be t + 60 but we're gonna shorten it
+				self.truckList[0].nextMoveTime = t + 6
+			
+			
+			print("ERE ", self.truckList[0].currentNode)
+			print("SHORTY ", self.truckList[0].currentPath)
+			print("TTT", t, self.truckList[0].nextMoveTime)
+			
+			#If we're at the start node we need a new path
+			if self.truckList[0].status == 2:
+				self.truckList[0].currentPath = self.truckList[0].currentPath2
+			
+			
+			#Decide if a minute has passed
+			if t == self.truckList[0].nextMoveTime:
+				#This counter tells us where we are at in the array
+				self.truckList[0].counter = self.truckList[0].counter + 1
+				#This sets the move time again 
+				#This should be t + 60 but for time purposes we shortened it
+				self.truckList[0].nextMoveTime = t + 8
+				#Test if we're at end of the path
+				if self.truckList[0].currentNode == self.truckList[0].nodeDestination:
+					
+					#check if we're where we want to be
+					if self.truckList[0].currentNode ==  self.truckList[0].finalNodeDestination:
+						nextMoveTime = 0
+						#status of 4 means done
+						self.truckList[0].status = 4
+					#This means we're at the start node and need to go to end node
+					else:
+						#We're gonna have to make a path from currentVertex to final node destination
+						self.truckList[0].currentPath = graphObject.shortestPath(22,3,self.Edges)
+						#status of 2 means at start node
+						self.truckList[0].status = 2
+						print(" Changed status to 2")
+						#Resetcounter to start at firstNode
+						#This is a weird counter
+						self.truckList[0].counter = 0
+						
+				#If we're still traveling on the same path
+				else:
+					print("Counter = ", self.truckList[0].coounter)
+					self.truckList[0].currentNode = self.truckList[0].currentPath[self.truckList[0].counter]
+			#End of test		
 			
 			#list of verticies
 			pleaseVert = self.Verticies
@@ -134,16 +180,20 @@ class World(AbstractWorld):
 			#Print out all in truckList
 			#Prints out all the speeds
 			for t in self.truckList:
-				''''''
-				#newSpeed = World.createSpeed(t, t.startingFirstNode, 40, pleaseVert)
-				#Takes the speed output from the create speed method
+				'''
+				#newSpeed = World.createSpeed(t, t.departureNode, t.nodeDestination, pleaseVert)
+				'''
+				#This moves it with a given speed
 				newSpeed = [0,0]
 				t.speedX = newSpeed[0]
 				t.speedY = newSpeed[1]
 				t.ballrect = t.ballrect.move(t.speedX, t.speedY)
-
+				self.truckTop = t.ballrect.top
+				self.truckLeft = t.ballrect.left
 				self.screen.blit(t.ball, t.ballrect)
-			
+				
+				
+				
 
 			#I don't know what this does
 			for x in self.trucks:
@@ -185,6 +235,7 @@ class World(AbstractWorld):
 		yDir = (secondNodeCoordinates[1] - firstNodeCoordinates[1])* 5
 		self.speed = [xDir,yDir]
 		return [xDir,yDir]
+	
 		
 	def nodeToCoordinate(self, node, worldVerticies):
 		
@@ -192,6 +243,26 @@ class World(AbstractWorld):
 			if x[0] == node:
 				return (x[1],x[2])
 			
+			
+			
+	def pathFollowing(self):
+		#the node its trying to get to 
+		#The node its at
+		#Move at everey minute
+		pass
+				
+				
+				
 	def decideIfArrived(self):
+		#
+		#Keep the same path, and go to the next node in
+		pass
+	
+	def decideIfAtStart(self):
+		#Get a new shortest path
+		pass
+	def decideIfEnded(self):
+		#Speed should go to zero
+		
 		pass
 
