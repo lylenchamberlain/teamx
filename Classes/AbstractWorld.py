@@ -17,9 +17,8 @@ class AbstractWorld:
 		for edge in EF:
 			self.Edges.append( [ edge[0] , edge[1] ,EF[edge][0 ],EF[edge][1 ],EF[edge][2 ] ])	
 			#print("First Value", edge[0], "Second Value", edge[1], "Third Value", EF[edge][0])		
- 
-		
 		self.Verticies=[]
+		
 		for v in VF:
 			self.Verticies.append(  [ v,float(VF[v][0]),float(VF[v][1])]  )	
 			#print("v ", v, "float(VF[v][0])", float(VF[v][0])	, " last value ", float(VF[v][1]))

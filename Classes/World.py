@@ -1,7 +1,9 @@
 from  Classes.AbstractWorld import AbstractWorld
-#from Classes.Animation import Animation
+from Classes.Animation import Animation
 
 import pygame
+import random
+from array import array
 pygame.font.init() 
 #from Animation import Animation
 
@@ -19,30 +21,34 @@ class World(AbstractWorld):
 		self.font  = pygame.font.SysFont('Comic Sans MS', 30)
 		self.trucks = self.getInitialTruckLocations()
 
-		self.ogball = pygame.image.load("myTrucky.png")
-		self.ball = pygame.transform.scale(self.ogball,(50,50))
-		self.ballrect = self.ball.get_rect()
-		self.ballrect = self.ballrect.move(350,350)
+		#Create initial animation objects
 		self.truckList = []
-		self.speed = []
-		
-		#self.truckList = listCreate(self)
-		#x = 0
-		#self.truckList = []
-		#Animation.generatesRandomVerticies(self.trucks)
-		#self.truckList = Animation.generateTrucklist
-		'''
+		x = 0
 		for i in self.trucks:
 			myAnimate = Animation()
 			self.truckList.append(myAnimate)
-			self.truckList[x].speed = [0,0]
+			self.truckList[x].value = x
+			#i current position should enter node its at
+			#Determine node that it start at initially
+			#For now we'll give it a random starting node
+			newRandom = x * 20
+			#x = x + 1
 			
-			self.truckList[x].currentPosition = i.currentVertex
-			
-			
-		x+=1
-		'''
+			#Determine coordinates of that node
+			for x in self.Verticies:
+				print("myTest", self.Verticies[0][0])
+				if x[0] == newRandom:
+					pass
+					#i.startPointX(self.Verticies[x][0])
+					#i.startPointY(self.Verticies[x][1])
+					#self.truckList[x].startPoints = (self.Verticies[x][1],self.Verticies[x][2])
 
+					
+			
+			
+
+				#print("FINAL lsit", self.truckList)
+		
 	def generateTruckList(self):
 		x = 0
 		truckList = []
@@ -63,6 +69,7 @@ class World(AbstractWorld):
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
 
 		'''
+		
 		This will give you a list of ALL cars which are in the system
 		'''
 		self.trucks = self.getInitialTruckLocations()
@@ -72,9 +79,13 @@ class World(AbstractWorld):
 			
 		print("****", self.Edges[0])
 
-		'''
-		We will run a simulation where "t" is the time index
-		'''
+
+			#This is test that truckList works
+		for i in self.truckList:
+			print("MYMY value ")#, i.value)
+			'''
+			We will run a simulation where "t" is the time index
+			'''
 		for t in range(initialTime,finalTime):	
 			print("\n\n Time: %02d:%02d"%(t/60, t%60))
 			# each minute we can get a few new orders
@@ -105,16 +116,31 @@ class World(AbstractWorld):
 				for y in range(len(self.Edges[x][3]) - 1):
 					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
 
-					
-			'''
-			#Lets try to print out our trucks
-			for x in self.truckList:
-				self.screen.blit(self.ball,self.ballrect)
-				print("MINEY", x)
-				self.ballrect = self.ballrect.move(x.speed)
-			'''
+
 			
+			#Lets try printing all our trucks, this is an example
+			#self.ballrect = self.ballrect.move(self.speedX, self.speedY)
 			
+			#This moves the truck at a speed
+			#self.screen.blit(self.ball,self.ballrect)
+			
+			#list of verticies
+			pleaseVert = self.Verticies
+
+			#Print out all in truckList
+			#Prints out all the speeds
+			for t in self.truckList:
+				
+				newSpeed = World.createSpeed(t, t.startingFirstNode, 40, pleaseVert)
+				#Takes the speed output from the create speed method
+				t.speedX = newSpeed[0]
+				t.speedY = newSpeed[1]
+				t.ballrect = t.ballrect.move(t.speedX, t.speedY)
+
+				self.screen.blit(t.ball, t.ballrect)
+			
+
+			#I don't know what this does
 			for x in self.trucks:
 				
 				for y in self.Verticies:
@@ -124,19 +150,11 @@ class World(AbstractWorld):
 						x.currentVertex == y[0]
 						#pygame.draw.rect(self.screen,(255,0,0),(800*y[1],800*y[2],40,40))
 			
-			pleaseVert = self.Verticies
-			World.createSpeed(self, 1, 40, pleaseVert)
-			#self.speed = [0,1]
-			#This sets the position
-			self.ballrect = self.ballrect.move(self.speed)
-			
-			#This moves the truck at a speed.
 
-			self.screen.blit(self.ball,self.ballrect)
      
 			pygame.display.update()	
 	
-			gameExit = False
+			gameExit = False			
 			
 			for event in pygame.event.get():
 				
@@ -153,15 +171,13 @@ class World(AbstractWorld):
 	
 	def createSpeed(self,firstNode,secondNode, worldVerticies):
 		
-		print(firstNode)
 		firstNodeCoordinates = World.nodeToCoordinate(self, firstNode, worldVerticies)
 		secondNodeCoordinates =  World.nodeToCoordinate(self, secondNode, worldVerticies)
 
 		#newSpeed[0] = secondNodeCoordinates - firstNodeCoordinates
 		newSpeed = [0,0]
-		xDir = secondNodeCoordinates[0] - firstNodeCoordinates[0] * 50
-		yDir = (secondNodeCoordinates[1] - firstNodeCoordinates[1])* 50
-		print("WWW.", newSpeed)
+		xDir = secondNodeCoordinates[0] - firstNodeCoordinates[0] * 5
+		yDir = (secondNodeCoordinates[1] - firstNodeCoordinates[1])* 5
 		self.speed = [xDir,yDir]
 		return [xDir,yDir]
 		
@@ -173,3 +189,4 @@ class World(AbstractWorld):
 			
 	def decideIfArrived(self):
 		pass
+

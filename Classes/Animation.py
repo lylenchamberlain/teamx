@@ -1,31 +1,46 @@
 from Classes.World import AbstractWorld
+from Classes.AbstractWorld import AbstractWorld
+import pygame
+import random
 
-class Animation:
+class Animation():
     #Use this for truck animations
-   
-    def _init_(self):
-        '''#Creates trucks
+    def determineStartNode(self):
+        return 2
+    
+    def __init__(self):
+        self.value = None
         self.speed = [0,0]
-        print("GOGO")
         self.ogball = pygame.image.load("myTrucky.png")
-        self.ball = pygame.transform.scale(self.ogball,(30,30))
+        self.ball = pygame.transform.scale(self.ogball,(19,19))
         self.ballrect = self.ball.get_rect()
-        self.ballrect = self.ballrect.move(350,350)
+        self.startingFirstNode = 17
+        randomValue = random.randrange( 100,400)
+        self.ballrect = self.ballrect.move(randomValue,randomValue)
         self.truckList = []
-        '''
-        self.value = 3
+        self.speedX = 0
+        self.speedY = 0
+        self.startPointX = 0
+        self.startPointY = 0
+        
+        
+
+    def myInit(self):
+
+        self.value = 5
+        print("STARTED INIT ")
         
     
     def generatesRandomVerticies(self):
         print("generateIt")
-        return 2
+        #self.value = 2
+        #return self.value
         
     def generateTrucklist(self, trucks):
         
         x = 0
         
         for i in trucks:
-            print("I", i)
             myAnimate = Animation()
             truckList.append(myAnimate)
             
@@ -50,6 +65,3 @@ class Animation:
             if myWorld.verticies[x][0] == node:
                 return (myWorld.verticies[x][1], myWorld.verticies[x][2])
             
-        
-    
-        
