@@ -198,11 +198,11 @@ class World(AbstractWorld):
 			
 			#This actually resets t (not what we want, but it works
 			for t in self.truckList:
+				
 				if t.status != 4:
 					#Quick fix for index problem
 					if len(t.currentPath) != (t.counter+1):
 
-						
 
 						if t.counter != 0:
 							thirdList = World.edgeToList(self, t.currentPath[t.counter - 1], t.currentPath[t.counter])
@@ -377,8 +377,7 @@ class World(AbstractWorld):
 		
 		#print("Start and end node ", startNode, endNode)
 		for x in self.Edges:
-			
-	
+		
 			if (x[0] == startNode and x[1] == endNode) or (x[1] == startNode and x[0] == endNode):
 				#print("X3", x[3])
 				#print(self.Edges)

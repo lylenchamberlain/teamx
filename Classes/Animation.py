@@ -3,7 +3,7 @@ from Classes.AbstractWorld import AbstractWorld
 import pygame
 import random
 
-
+#Stores facts about our trucks
 class Animation():
 
     

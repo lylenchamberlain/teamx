@@ -16,9 +16,9 @@ edgeText = open('SF_edges.txt','r')
 #listy = []
 #listy.append(x)
 #listy.append(y)
-test = (0,1)
-test2 = test * 2
-print(test2)
+#test = (0,1)
+#test2 = test * 2
+#print(test2)
 
 #We might not need any of this due to the pickle file
 #Array of edge instances, allows us to access edges easier
