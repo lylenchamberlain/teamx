@@ -72,7 +72,7 @@ class World(AbstractWorld):
 			textrect = text.get_rect()
 			textrect.centerx = 100
 			textrect.centery = 30
-			self.screen.fill((255, 255, 255))
+			#self.screen.fill((255, 255, 255))
 			self.screen.blit(text, textrect)
  			
  			#Draw Vertices onto the screen
@@ -197,24 +197,24 @@ class World(AbstractWorld):
 			#Max data points = 34 so lets use 35
 			
 			#This actually resets t (not what we want, but it works
-			for t in self.truckList:
+			for u in self.truckList:
 				
-				if t.status != 4:
+				if u.status != 4:
 					#Quick fix for index problem
-					if len(t.currentPath) != (t.counter+1):
+					if len(u.currentPath) != (u.counter+1):
 
 
-						if t.counter != 0:
-							thirdList = World.edgeToList(self, t.currentPath[t.counter - 1], t.currentPath[t.counter])
+						if u.counter != 0:
+							thirdList = World.edgeToList(self, u.currentPath[u.counter - 1], u.currentPath[u.counter])
 						else: 
-							thirdList = World.edgeToList(self,t.currentPath[t.counter], t.currentPath[t.counter+1])
+							thirdList = World.edgeToList(self,u.currentPath[u.counter], u.currentPath[u.counter+1])
 						testCount = 0
 						
-						t.thirdList = thirdList
+						u.thirdList = thirdList
 						
-						for p in t.thirdList:
+						for p in u.thirdList:
 							#t.thirdListEasy.append((p[0],p[1]))
-							t.thirdListEasy.append((p[0],p[1]))
+							u.thirdListEasy.append((p[0],p[1]))
 			
 			
 			#Now print out the trucks using third list
@@ -253,81 +253,84 @@ class World(AbstractWorld):
 					
 			
 			
-			for yy in self.truckList:
+			for i in range(0,35):
+				#pygame.display.update()
+				#This works but it does it all at once
+				#self.screen.fill((255,255,255))
 				
-				if yy.status != 4:
-
-				#	print("THIRD", yy.thirdListEasy)
-					for kk in yy.thirdListEasy:
-						
-						
-						x = kk[0] * 800
-						y = kk[1] * 800
-						#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
-						self.screen.fill((255,255,255))
-						self.screen.blit(t.ball, (x,y))
-						'''This is all very bad but it works'''
-						 #Draw Vertices onto the screen
-						for item in range(len(self.Verticies)):
-							pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
-			
-						#Draws Edges onto the screen
-						for x in range(len(self.Edges)):
-							#Iterate through all the points of path
-							for y in range(len(self.Edges[x][3]) - 1):
-								pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+				#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
+				#self.screen.blit(yy.ball, (x,y))
+				''' #Draw Vertices onto the screen
+				for item in range(len(self.Verticies)):
+					pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+				
+				#Draws Edges onto the screen
+				for x in range(len(self.Edges)):
+					#Iterate through all the points of path
+					for y in range(len(self.Edges[x][3]) - 1):
+						pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+				
+				text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
+				textrect = text.get_rect()
+				textrect.centerx = 100
+				textrect.centery = 30
+				self.screen.blit(text, textrect)
+				'''
+					
+				for yy in self.truckList:
+					if yy.status != 4:
 							
-						#text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
-						#textrect = text.get_rect()
-						#textrect.centerx = 100
-						#textrect.centery = 30
-						#self.screen.fill((255, 255, 255))
-						#self.screen.blit(text, textrect)
-						'''end of very bad screen redraw'''
-				#Create an object to Access functions in the graph class
-				
-						#yy.ballrect = yy.ballrect.move(yy.speedX, yy.speedY)
-						#self.screen.blit(self.screen, (x, y), pygame.Rect(x, y, 62, 62))
-						pygame.display.update()
+	
+							
+						try:
+							x = yy.thirdList[i][0] * 800
+							y = yy.thirdList[i][1] * 800
+							self.screen.blit(yy.ball, (x,y))
+							#pygame.display.update()
+							'''#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
+							self.screen.blit(yy.ball, (x,y))
+							 #Draw Vertices onto the screen
+								for item in range(len(self.Verticies)):
+									pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+														#Draws Edges onto the screen
+								for x in range(len(self.Edges)):
+									#Iterate through all the points of path
+									for y in range(len(self.Edges[x][3]) - 1):
+										pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+									
+								text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
+								textrect = text.get_rect()
+								textrect.centerx = 100
+								textrect.centery = 30
+								self.screen.blit(text, textrect)
+								'''
+						except:
+							print("RAWR")
+				pygame.display.update()
+			self.screen.fill((255,255,255))
+										 #Draw Vertices onto the screen
+			for item in range(len(self.Verticies)):
+				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+			
+			#Draws Edges onto the screen
+			for x in range(len(self.Edges)):
+				#Iterate through all the points of path
+				for y in range(len(self.Edges[x][3]) - 1):
+					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+			
+			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
+			textrect = text.get_rect()
+			textrect.centerx = 100
+			textrect.centery = 30
+			self.screen.blit(text, textrect)
+			
+			pygame.display.update()
 
 
 						
+						
+						
 
-					
-
-			'''#Now display, just got to figure out type of third list
-			for tt in self.truckList:
-						
-				for zz in tt.thirdList:		
-					truckX = zz[0] * 800
-					truckY = zz[1] * 800
-					self.screen.blit(t.ball, (truckX, truckY))
-			'''
-		
-					
-				
-
-			'''
-			for t in self.truckList:
-				if t.status != 4:
-					#Quick fix for index problem
-					if len(t.currentPath) == (t.counter + 1):
-						t.counter = t.counter - 1
-					#Get that list of all the points it has to pass	
-					thirdList = []
-					thirdList = World.edgeToList(self, t.currentNode, t.currentPath[t.counter + 1])
-					
-					for z in thirdList:
-						truckX = z[0] * 800
-						truckY = z[1] * 800
-						self.screen.blit(t.ball, (truckX, truckY))
-						
-			'''			
-						
-						
-						
-			#update display	
-			pygame.display.update()	
 
 			#This allows us to exit the game if we want
 			gameExit = False			
