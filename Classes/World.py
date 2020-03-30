@@ -195,6 +195,8 @@ class World(AbstractWorld):
 			'''
 			#First let's split up each necessary edge into an edge of 20
 			#Max data points = 34 so lets use 35
+			
+			#This actually resets t (not what we want, but it works
 			for t in self.truckList:
 				if t.status != 4:
 					#Quick fix for index problem
@@ -257,12 +259,36 @@ class World(AbstractWorld):
 
 				#	print("THIRD", yy.thirdListEasy)
 					for kk in yy.thirdListEasy:
+						
+						
 						x = kk[0] * 800
 						y = kk[1] * 800
 						#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
+						self.screen.fill((255,255,255))
 						self.screen.blit(t.ball, (x,y))
-						yy.ballrect = yy.ballrect.move(yy.speedX, yy.speedY)
-						self.screen.blit(self.screen, (x, y), pygame.Rect(x, y, 62, 62))
+						'''This is all very bad but it works'''
+						 #Draw Vertices onto the screen
+						for item in range(len(self.Verticies)):
+							pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+			
+						#Draws Edges onto the screen
+						for x in range(len(self.Edges)):
+							#Iterate through all the points of path
+							for y in range(len(self.Edges[x][3]) - 1):
+								pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+							
+						#text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
+						#textrect = text.get_rect()
+						#textrect.centerx = 100
+						#textrect.centery = 30
+						#self.screen.fill((255, 255, 255))
+						#self.screen.blit(text, textrect)
+						'''end of very bad screen redraw'''
+				#Create an object to Access functions in the graph class
+				
+						#yy.ballrect = yy.ballrect.move(yy.speedX, yy.speedY)
+						#self.screen.blit(self.screen, (x, y), pygame.Rect(x, y, 62, 62))
+						pygame.display.update()
 
 
 						

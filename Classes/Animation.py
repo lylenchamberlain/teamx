@@ -17,7 +17,7 @@ class Animation():
         
         #The following creates a rectangle and  image for the truck
         self.ogball = pygame.image.load("myTrucky.png")
-        self.ball = pygame.transform.scale(self.ogball,(19,19))
+        self.ball = pygame.transform.scale(self.ogball,(25,25))
         self.ballrect = self.ball.get_rect()
 
         self.nodeDestination = 0#NOde its supposed to end up at
