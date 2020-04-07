@@ -8,7 +8,10 @@ import plotly.graph_objects as go
 #from Graph import shortestPath
 
 
+
 myWorld = World()
+myWorld.getLocationOfWarehouses()
+myWorld.getProductionLines()
 
 edgeText = open('SF_edges.txt','r')
 

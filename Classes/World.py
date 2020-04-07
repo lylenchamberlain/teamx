@@ -66,7 +66,8 @@ class World(AbstractWorld):
 			
 			for c in newOrders:
 				print(c)
-				#I think we should add paths here for specific vehicles
+				print(c.productionProcess)
+				print(c.finalLocation)				#I think we should add paths here for specific vehicles
 			
 			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
 			textrect = text.get_rect()
@@ -287,25 +288,11 @@ class World(AbstractWorld):
 							y = yy.thirdList[i][1] * 800
 							self.screen.blit(yy.ball, (x,y))
 							#pygame.display.update()
-							'''#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
-							self.screen.blit(yy.ball, (x,y))
-							 #Draw Vertices onto the screen
-								for item in range(len(self.Verticies)):
-									pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
-														#Draws Edges onto the screen
-								for x in range(len(self.Edges)):
-									#Iterate through all the points of path
-									for y in range(len(self.Edges[x][3]) - 1):
-										pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
-									
-								text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
-								textrect = text.get_rect()
-								textrect.centerx = 100
-								textrect.centery = 30
-								self.screen.blit(text, textrect)
-								'''
+
 						except:
-							print("RAWR")
+							pass
+							
+							
 				pygame.display.update()
 			self.screen.fill((255,255,255))
 										 #Draw Vertices onto the screen
@@ -346,20 +333,7 @@ class World(AbstractWorld):
 			if gameExit == True:
 				break
 	
-	
-	#This is not used right now. Its a function that gives a proper animation speed based on two vertexes so I'll keep it in for now
-	'''def createSpeed(self,firstNode,secondNode, worldVerticies):
-		
-		firstNodeCoordinates = World.nodeToCoordinate(self, firstNode, worldVerticies)
-		secondNodeCoordinates =  World.nodeToCoordinate(self, secondNode, worldVerticies)
 
-		#newSpeed[0] = secondNodeCoordinates - firstNodeCoordinates
-		newSpeed = [0,0]
-		xDir = secondNodeCoordinates[0] - firstNodeCoordinates[0] * 5
-		yDir = (secondNodeCoordinates[1] - firstNodeCoordinates[1])* 5
-		self.speed = [xDir,yDir]
-		return [xDir,yDir]
-	'''
 	
 	#Give it a vertex ID (its unique identifier) this will return the x and y value in a tuple
 	def nodeToCoordinate(self, node, worldVerticies):
