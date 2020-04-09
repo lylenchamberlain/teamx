@@ -28,6 +28,7 @@ class World(AbstractWorld):
 
 		#Create initial animation objects
 		self.truckList = []
+		self.ProductionLines = []
 		
 		for i in self.trucks:
 			#Go through all the verticies to determine which one the struck is at
@@ -46,7 +47,8 @@ class World(AbstractWorld):
 			
 					
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
-
+		World.assignNodeDuties(self)
+		print("LOCATION", World.findWarehouse(self, 'A'))
 		'''
 		This will give you a list of ALL cars which are in the system
 		'''
@@ -68,6 +70,24 @@ class World(AbstractWorld):
 				print(c)
 				print(c.productionProcess)
 				print(c.finalLocation)				#I think we should add paths here for specific vehicles
+				
+			
+			'''
+			for every newOrder:
+				for every warehouse and line needed
+					find out the line needed
+					find out the material needed
+					Find out the vertexes that have those things
+					make a path from truck through the points
+			'''
+			for c in newOrders:
+				for x in c.productionProcess:
+					#This gives the vertex of the process line and warehouse
+					World.findProcessLine(self, c.productionProcess[0]['processinLine'])
+					World.findWarehouse(self, c.productionProcess[1]['resourceNeeded'])
+		
+			
+			
 			
 			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
 			textrect = text.get_rect()
@@ -350,6 +370,27 @@ class World(AbstractWorld):
 		randomVertexValue = randomVertex[0]
 		return randomVertexValue 
 	
+	def assignNodeDuties(self):
+		types = ["A","B","C","D","E","F","G","H"]
+		ProductionLines = []
+		j = 0
+		for t in types:
+			for k in range(2):
+				ProductionLines.append(t)
+				j+=1
+		
+		
+		types = ["L1","L2","L3","L4"]
+		j = 20
+		for t in types:
+			for k in range(5):
+				ProductionLines.append(t)
+				
+				j = j + 1
+		self.ProductionLines = ProductionLines
+		print("PRODUCTION", ProductionLines)
+		return ProductionLines
+	
 	def edgeToList(self, startNode, endNode):
 		
 		#print("Start and end node ", startNode, endNode)
@@ -363,6 +404,18 @@ class World(AbstractWorld):
 				return x[3]
 			
 		print("ERROR")
+		
+	def findProcessLine(self, type):
+		#Find the node of the process Line
+		for x in range(11, 30):
+			if (type ==  self.ProductionLines[x]):
+				
+				return self.vShuffled[x]
+	
+	def findWarehouse(self, resource):
+		for y in range(0,10):
+			if(resource == self.ProductionLines[y]):
+				return self.vShuffled[y]
 		
 		
 

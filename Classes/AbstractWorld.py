@@ -28,6 +28,9 @@ class AbstractWorld:
 		self.map = {"L1":["A","B"],"L2":["C","D"],"L3":["E","F"],"L4":["G","H"]}
 		self.getProductionLines()
 		
+
+		
+		
 	def getLocationOfWarehouses(self):	
 		types = ["A","B","C","D","E","F","G","H"]
 		Warehouses = []
