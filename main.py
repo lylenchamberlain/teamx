@@ -10,8 +10,6 @@ import plotly.graph_objects as go
 
 
 myWorld = World()
-myWorld.getLocationOfWarehouses()
-myWorld.getProductionLines()
 
 edgeText = open('SF_edges.txt','r')
 

@@ -72,23 +72,6 @@ class World(AbstractWorld):
 				print(c.finalLocation)				#I think we should add paths here for specific vehicles
 				
 			
-			'''
-			for every newOrder:
-				for every warehouse and line needed
-					find out the line needed
-					find out the material needed
-					Find out the vertexes that have those things
-					make a path from truck through the points
-			'''
-			for c in newOrders:
-				for x in c.productionProcess:
-					#This gives the vertex of the process line and warehouse
-					World.findProcessLine(self, c.productionProcess[0]['processinLine'])
-					World.findWarehouse(self, c.productionProcess[1]['resourceNeeded'])
-		
-			
-			
-			
 			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
 			textrect = text.get_rect()
 			textrect.centerx = 100
@@ -106,14 +89,96 @@ class World(AbstractWorld):
 				for y in range(len(self.Edges[x][3]) - 1):
 					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
 				
-				#Create an object to Access functions in the graph class
-				
-			#screen.blit(background_surface, (0, 0))
-
 			graphObject = Graph()
+		
+			
+			for c in newOrders:
+				
+				#We can't grab a truck that is out of index
+				if self.orderTracker >= len(self.truckList):
+					self.orderTracker = 0
+					
+				#Grab a truck
+				currentTruck = self.truckList[self.orderTracker]
+				currentTruck.status = 1
+				#Increment counter to get next truck
+				self.orderTracker = self.orderTracker + 1
+				#Set it so that it moves immediately
+				currentTruck.nextMoveTime = t
+				#Give the final node
+				currentTruck.finalNode == c.finalLocation
+				
+				#This creates the path that the truck will follow
+				for x in c.productionProcess:
+					#This gives the vertex of the process line and warehouse that are need
+					currentLine = World.findProcessLine(self, x['processinLine'])
+					currentWarehouse = World.findWarehouse(self, x['resourceNeeded'])
+					
+					if (currentTruck.currentNode != currentWarehouse):
+						#Make path from currentNode to warehouse
+						currentTruck.truckPath.append( graphObject.shortest_path2(currentTruck.currentNode,currentWarehouse,self.Edges)	)			
+					#Make path to line
+					currentTruck.truckPath.append(graphObject.shortest_path2(currentWarehouse, currentLine, self.Edges))
+			
+				#Make a path from final line to final node
+				currentTruck.truckPath.append(graphObject.shortest_path2(currentLine, c.finalLocation, self.Edges))
+
+			#END OF NEW ORDERS
+			
+			for truck in self.truckList:
+				
+				if truck.status != 4:	
+
+					#Are we at the end of small array?
+					if truck.smallCounter == (len(truck.truckPath[truck.bigCounter]) - 1):
+						
+						#Are we at the final node?
+						if (truck.bigCounter == len(truck.truckPath) - 1):
+							#BReak out, we're done.
+							truck.smallCounter = 0
+							truck.bigCounter = 0
+							truck.status = 4
+							truck.currentLoad = ""
+							
+						#If so, we want to go to the next big path and reset small counter
+						#Careful, I think we might double count a vertex when changing nodes'''
+						
+						else:
+							truck.bigCounter = truck.bigCounter + 1
+							truck.smallCounter = 0
+					
+					else:
+						truck.smallCounter = truck.smallCounter + 1
+
+					truck.currentNode = truck.truckPath[truck.bigCounter][truck.smallCounter]
+
+					#Start animation
+					if truck.status != 4:	
+						truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
+						truckX = 800 * truckLocation[0]
+						truckY = 800 * truckLocation[1]
+						#Display the current vertex of the truck
+						self.screen.blit(truck.ball, (truckX, truckY))
+				pygame.display.update()		
+					
+					
+			#End of for loop for trucks, my animation trick for third list now		
+				
+					#Make a route from current vertex to warehouse
+					
+					#Append it to current truck path
+					#Make a route from warehouse to processLine
+					#append it to current truck path
+					
+			#UPDate
+
+					
+
+		
+
 
 			#Goes through all the new orders. If no new orders we don't go into this for loop
-			for x in newOrders:
+			'''for x in newOrders:
 				
 				#Create two random vertexes for order to travel 
 				orderVertexStart = World.getRandomVertex(self)
@@ -193,26 +258,27 @@ class World(AbstractWorld):
 						aTruck.currentNode = aTruck.currentPath[aTruck.counter]
 						
 			#print out our trucks at their current index, this works. But lets get fancy
-			'''for t in self.truckList:
+			'''#for t in self.truckList:
+		
+			#For now only display if not done (Status is not 4)
+			#if t.status != 4:
+			'''if True:
+				#For now we don't want any speed
+				t.speedX = 0
+				t.speedY = 0
+				t.ballrect = t.ballrect.move(t.speedX, t.speedY)
+				#Takes the current vertex and changes that into coordinates
+				truckLocation = World.nodeToCoordinate(self,t.currentNode, self.Verticies)
+				#Scales the coordinates to fit our grid
+				truckX = 800 * truckLocation[0]
+				truckY = 800 * truckLocation[1]
+				#Display the current vertex of the truck
+				self.screen.blit(t.ball, (truckX, truckY))
+				'''
 				
-				#For now only display if not done (Status is not 4)
-				if t.status != 4:
-					#For now we don't want any speed
-					t.speedX = 0
-					t.speedY = 0
-					t.ballrect = t.ballrect.move(t.speedX, t.speedY)
-					#Takes the current vertex and changes that into coordinates
-					truckLocation = World.nodeToCoordinate(self,t.currentNode, self.Verticies)
-					#Scales the coordinates to fit our grid
-					truckX = 800 * truckLocation[0]
-					truckY = 800 * truckLocation[1]
-					#Display the current vertex of the truck
-					self.screen.blit(t.ball, (truckX, truckY))
-					
-					
-				#If its done delete the animation (we move off screen because I don't know how to unblit)
-				else:
-					self.screen.blit(t.ball, (2000,2000))
+			#If its done delete the animation (we move off screen because I don't know how to unblit)
+			#else:
+			#	self.screen.blit(t.ball, (2000,2000))
 			'''
 			#First let's split up each necessary edge into an edge of 20
 			#Max data points = 34 so lets use 35
@@ -282,6 +348,10 @@ class World(AbstractWorld):
 				#self.screen.blit(self.screen, t.ballrect, (x, y), 10)
 				#self.screen.blit(yy.ball, (x,y))
 				''' #Draw Vertices onto the screen
+			if True:
+				pass
+				#World.printMap(self, t)
+				'''
 				for item in range(len(self.Verticies)):
 					pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
 				
@@ -298,70 +368,54 @@ class World(AbstractWorld):
 				self.screen.blit(text, textrect)
 				'''
 					
-				for yy in self.truckList:
-					if yy.status != 4:
-							
 	
 							
-						try:
-							x = yy.thirdList[i][0] * 800
-							y = yy.thirdList[i][1] * 800
-							self.screen.blit(yy.ball, (x,y))
-							#pygame.display.update()
-
-						except:
-							pass
 							
-							
-				pygame.display.update()
 			self.screen.fill((255,255,255))
-										 #Draw Vertices onto the screen
-			for item in range(len(self.Verticies)):
-				pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
-			
-			#Draws Edges onto the screen
-			for x in range(len(self.Edges)):
-				#Iterate through all the points of path
-				for y in range(len(self.Edges[x][3]) - 1):
-					pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
-			
-			text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
-			textrect = text.get_rect()
-			textrect.centerx = 100
-			textrect.centery = 30
-			self.screen.blit(text, textrect)
-			
-			pygame.display.update()
-
-
-						
-						
-						
-
 
 			#This allows us to exit the game if we want
-			gameExit = False			
-			for event in pygame.event.get():
-				
-				if event.type == pygame.QUIT:
-					gameExit = True
-					pygame.quit()
-					
-				
-				
-			self.clock.tick(fps)
-			if gameExit == True:
-				break
-	
+			if World.quitGame(self, fps) == True:
+				break		
 
 	
 	#Give it a vertex ID (its unique identifier) this will return the x and y value in a tuple
 	def nodeToCoordinate(self, node, worldVerticies):
-		
 		for x in worldVerticies:
 			if x[0] == node:
 				return (x[1],x[2])
-			
+		
+	def quitGame(self, fps):
+		gameExit = False			
+		for event in pygame.event.get():
+				
+			if event.type == pygame.QUIT:
+				gameExit = True
+				pygame.quit()
+					
+				
+				
+		self.clock.tick(fps)
+		if gameExit == True:
+			return True
+		return False
+		
+
+	#PRINT EDGES, verticies and timer
+	def printMap(self, t):
+		for item in range(len(self.Verticies)):
+			pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
+				
+		#Draws Edges onto the screen
+		for x in range(len(self.Edges)):
+			#Iterate through all the points of path
+				for y in range(len(self.Edges[x][3]) - 1):
+						pygame.draw.line(self.screen,(90,200,90), (self.Edges[x][3][y][0]*800, self.Edges[x][3][y][1]*800), (self.Edges[x][3][y+1][0]*800, self.Edges[x][3][y+1][1]*800) , 4)
+				
+		text = self.font.render("Time: %02d:%02d"%(t/60, t%60), True, (255, 0, 0), (255, 255, 255))
+		textrect = text.get_rect()
+		textrect.centerx = 100
+		textrect.centery = 30
+		self.screen.blit(text, textrect)
 			
 	#Returns a value for random vertex. It will only return the integer unique identifying value
 	def getRandomVertex(self):
@@ -388,7 +442,6 @@ class World(AbstractWorld):
 				
 				j = j + 1
 		self.ProductionLines = ProductionLines
-		print("PRODUCTION", ProductionLines)
 		return ProductionLines
 	
 	def edgeToList(self, startNode, endNode):
@@ -397,23 +450,19 @@ class World(AbstractWorld):
 		for x in self.Edges:
 		
 			if (x[0] == startNode and x[1] == endNode) or (x[1] == startNode and x[0] == endNode):
-				#print("X3", x[3])
-				#print(self.Edges)
-				#print(x[3])
-				#print(type(x[3]))
+
 				return x[3]
 			
 		print("ERROR")
 		
 	def findProcessLine(self, type):
 		#Find the node of the process Line
-		for x in range(11, 30):
+		for x in range(17, 50):
 			if (type ==  self.ProductionLines[x]):
-				
 				return self.vShuffled[x]
 	
 	def findWarehouse(self, resource):
-		for y in range(0,10):
+		for y in range(0,16):
 			if(resource == self.ProductionLines[y]):
 				return self.vShuffled[y]
 		
