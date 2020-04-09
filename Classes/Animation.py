@@ -7,7 +7,7 @@ import random
 class Animation():
 
     
-    def __init__(self, currentVertex):
+    def __init__(self, currentVertex, capacity):
         #This is the node the truck is currently out
         self.currentNode = currentVertex
         
@@ -22,10 +22,14 @@ class Animation():
         self.bigCounter = 0
         self.smallCounter = 0
         self.finalNode = 1000
+        self.processTimes = []
 
         self.currentLoad = "" #String of the job its carrying
         self.thirdListEasy = []
         self.truckPath = []
+        self.timeNeeded = []
+        self.dict = {}
+        self.capacity = capacity
 
 
         

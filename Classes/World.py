@@ -29,9 +29,12 @@ class World(AbstractWorld):
 		#Create initial animation objects
 		self.truckList = []
 		self.ProductionLines = []
+		self.loopAmount = 0
 		
+		#Set initial locations and capacities
 		for i in self.trucks:
 			#Go through all the verticies to determine which one the struck is at
+			theCapacity = i.capacity
 			for x in self.Verticies:
 				#This is the Vertex the truck starts at
 				startingNode = i.currentVertex
@@ -42,10 +45,11 @@ class World(AbstractWorld):
 					break
 			
 			#Create an animation object (it's a truck picture) with the node identifier that it starts at
-			myAnimate = Animation(startingNode)
+			myAnimate = Animation(startingNode, theCapacity)
 			self.truckList.append(myAnimate)
+		self.sortList = []
 			
-					
+		
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
 		World.assignNodeDuties(self)
 		print("LOCATION", World.findWarehouse(self, 'A'))
@@ -58,6 +62,13 @@ class World(AbstractWorld):
 		'''
 		We will run a simulation where "t" is the time index
 		'''
+			
+		#Sort the trucks in a list from smalles capacity to biggest
+		#Only sort once
+		if self.loopAmount != 1:
+			World.sortList(self)
+			self.loopAmount = 1
+				
 		for t in range(initialTime,finalTime):	
 			print("\n\n Time: %02d:%02d"%(t/60, t%60))
 
@@ -65,6 +76,7 @@ class World(AbstractWorld):
 			newOrders = self.getNewOrdersForGivenTime(t)
 			print("New orders:")
 			#Let's graph the truck movements here
+			
 			
 			for c in newOrders:
 				print(c)
@@ -93,13 +105,36 @@ class World(AbstractWorld):
 		
 			
 			for c in newOrders:
-				
+				#better way to grab truck
+				#Find the max capacity
+				maxNeeded = 0
+				for theLine in c.productionProcess:
+					if (theLine['materialNeeded[tons]'] > maxNeeded):
+						maxNeeded = theLine['materialNeeded[tons]']
+				#Should have the max needed. Now we try to grab a truck
+				for aTruck in self.truckList:
+					if (aTruck.capacity >= maxNeeded):
+						currentTruck = aTruck
+						break
+					
+					
+					
+				#currentTruck = self.truckList[self.orderTracker]
 				#We can't grab a truck that is out of index
-				if self.orderTracker >= len(self.truckList):
-					self.orderTracker = 0
+				#if self.orderTracker >= len(self.truckList):
+				#	self.orderTracker = 0
+					
 					
 				#Grab a truck
-				currentTruck = self.truckList[self.orderTracker]
+				
+				'''better way to grab a truck
+				#Find capacity for each truck in truckList
+				Make a list where we have the trucks in decending order
+				Figure out the maximum capacity needed
+				Cycle through truck list, starting with smallest, and grab a truck once capactiy >= max capacity needed
+				for truck in truckList:
+				
+				'''
 				currentTruck.status = 1
 				#Increment counter to get next truck
 				self.orderTracker = self.orderTracker + 1
@@ -112,7 +147,11 @@ class World(AbstractWorld):
 				for x in c.productionProcess:
 					#This gives the vertex of the process line and warehouse that are need
 					currentLine = World.findProcessLine(self, x['processinLine'])
+					#appends dictionary with line vertex as a key and processTime as a processingTime
+					currentTruck.dict.update( {currentLine : x['processingTime']} )					
+					
 					currentWarehouse = World.findWarehouse(self, x['resourceNeeded'])
+					
 					
 					if (currentTruck.currentNode != currentWarehouse):
 						#Make path from currentNode to warehouse
@@ -127,7 +166,8 @@ class World(AbstractWorld):
 			
 			for truck in self.truckList:
 				
-				if truck.status != 4:	
+				if truck.status != 4 and truck.nextMoveTime == t:	
+					#truck.nextMoveTime = t + 6
 
 					#Are we at the end of small array?
 					if truck.smallCounter == (len(truck.truckPath[truck.bigCounter]) - 1):
@@ -139,6 +179,8 @@ class World(AbstractWorld):
 							truck.bigCounter = 0
 							truck.status = 4
 							truck.currentLoad = ""
+							truck.processTimes = []
+							truck.nextMoveTime = 0
 							
 						#If so, we want to go to the next big path and reset small counter
 						#Careful, I think we might double count a vertex when changing nodes'''
@@ -146,12 +188,22 @@ class World(AbstractWorld):
 						else:
 							truck.bigCounter = truck.bigCounter + 1
 							truck.smallCounter = 0
+							
 					
 					else:
 						truck.smallCounter = truck.smallCounter + 1
 
 					truck.currentNode = truck.truckPath[truck.bigCounter][truck.smallCounter]
 
+					#We assign truck currentNod
+					for dict in truck.dict:
+						if (truck.currentNode == dict):
+							#We need to add a time
+							truck.nextMoveTime = t + truck.dict[truck.currentNode]
+						else:
+							truck.nextMoveTime = t + 1
+						
+					
 					#Start animation
 					if truck.status != 4:	
 						truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
@@ -383,6 +435,28 @@ class World(AbstractWorld):
 		for x in worldVerticies:
 			if x[0] == node:
 				return (x[1],x[2])
+		
+		
+	def sortList(self):
+		
+		#We care about truck.capacity
+		# Traverse through all array elements 
+		for i in range(len(self.truckList)): 
+		      
+		    # Find the minimum element in remaining  
+		    # unsorted array 
+		    min_idx = i 
+		    for j in range(i+1, len(self.truckList)): 
+		        if self.truckList[min_idx].capacity > self.truckList[j].capacity: 
+		            min_idx = j 
+		              
+		    # Swap the found minimum element with  
+		    # the first element         
+		    self.truckList[i], self.truckList[min_idx] = self.truckList[min_idx], self.truckList[i] 
+		
+		return
+		
+		
 		
 	def quitGame(self, fps):
 		gameExit = False			
