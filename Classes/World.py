@@ -52,7 +52,7 @@ class World(AbstractWorld):
 		
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
 		World.assignNodeDuties(self)
-		print("LOCATION", World.findWarehouse(self, 'A'))
+		#print("LOCATION", World.findWarehouse(self, 'A'))
 		'''
 		This will give you a list of ALL cars which are in the system
 		'''
@@ -143,14 +143,19 @@ class World(AbstractWorld):
 				#Give the final node
 				currentTruck.finalNode == c.finalLocation
 				
+				trackerForFirst = 0
 				#This creates the path that the truck will follow
+				prevNode = 10000
 				for x in c.productionProcess:
 					#This gives the vertex of the process line and warehouse that are need
 					currentLine = World.findProcessLine(self, x['processinLine'])
 					#appends dictionary with line vertex as a key and processTime as a processingTime
 					currentTruck.dict.update( {currentLine : x['processingTime']} )					
 					
-					currentWarehouse = World.findWarehouse(self, x['resourceNeeded'])
+
+					currentWarehouse = World.findWarehouse(self, x['resourceNeeded'], currentTruck.currentNode)
+	
+															
 					
 					
 					if (currentTruck.currentNode != currentWarehouse):
@@ -535,10 +540,19 @@ class World(AbstractWorld):
 			if (type ==  self.ProductionLines[x]):
 				return self.vShuffled[x]
 	
-	def findWarehouse(self, resource):
+	def findWarehouse(self, resource, currentNode):
+		warehouseOption = []
+		'''for y in range(0,16):
+			if(resource == self.ProductionLines[y]):
+				warehouseOption.append(self.vShuffled[y])
+				return self.vShuffled[y]'''
 		for y in range(0,16):
 			if(resource == self.ProductionLines[y]):
 				return self.vShuffled[y]
+
+
+				
+	
 		
 		
 

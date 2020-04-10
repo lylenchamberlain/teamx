@@ -30,6 +30,7 @@ class Animation():
         self.timeNeeded = []
         self.dict = {}
         self.capacity = capacity
+        self.loadSize = 0
 
 
         

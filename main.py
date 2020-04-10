@@ -1,7 +1,7 @@
 from Classes.World import World
 from Graph import Graph
 import random
-import networkx as nx
+import networkx as nx   
 from Classes.Animation import Animation
 import plotly.graph_objects as go
 
