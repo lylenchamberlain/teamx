@@ -18,8 +18,7 @@ class Animation():
 
 
         self.status = 4 # 1 if moving to starting node, 2 if at starting node, #3 if moving to end node, 4 if done
-        #This counter is used to figure out what point on the path the truck is at
-        self.bigCounter = 0
+        #This counter is used to figure out what point on the h the truck is at
         self.smallCounter = 0
         self.finalNode = 1000
         self.processTimes = []
@@ -29,8 +28,25 @@ class Animation():
         self.truckPath = []
         self.timeNeeded = []
         self.dict = {}
+        self.stops = []
         self.capacity = capacity
         self.loadSize = 0
+        self.loadDict = {
+            'A' : 0,
+            'B' : 0,
+            'C' : 0,
+            'D' : 0,
+            'E' : 0,
+            'F' : 0,
+            'G' : 0, 
+            'H' : 0
+            }
+        self.totalNeeded = {}
+        self.typeNeeded = {}
+        self.amountNeeded = {}
+        self.warehouseType = {}
+        self.currentPath = []
+        self.nextMoveTime = 0
 
 
         

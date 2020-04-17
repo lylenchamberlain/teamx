@@ -52,7 +52,6 @@ class Graph:
                 pre[nv] = smallest_node
                 
                 
-                
         return Graph.findPath(start_node, end_node, pre)
        
       
