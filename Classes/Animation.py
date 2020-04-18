@@ -43,10 +43,13 @@ class Animation():
             }
         self.totalNeeded = {}
         self.typeNeeded = {}
+        self.timeNeeded = {}
         self.amountNeeded = {}
         self.warehouseType = {}
         self.currentPath = []
         self.nextMoveTime = 0
+        self.dueDate = 0
+        self.completePath = []
 
 
         

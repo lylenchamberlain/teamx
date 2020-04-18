@@ -23,10 +23,11 @@ edgeGraph = Graph()
 #Adds edges
 for x in range(len(myWorld.Edges)):
     Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2], myWorld.Edges)
-        
+    
+print("myWorld.edges", myWorld.Edges[0])
+
 print("myWorld.verticies",myWorld.Verticies)
 
-print("myWorld.edges", myWorld.Edges)
 
 myWorld.runSimulation(10)
 

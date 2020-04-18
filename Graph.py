@@ -51,7 +51,6 @@ class Graph:
                 d[nv] = proposed_distance
                 pre[nv] = smallest_node
                 
-                
         return Graph.findPath(start_node, end_node, pre)
        
       
@@ -70,6 +69,8 @@ class Graph:
   def get_cost(self, u,v):
         if u > v:
             u, v = v, u
+        #print("ENTRY", self.cost[(u,v)])
+
         if (u,v) in self.cost:
            return self.cost[(u,v)]
         return None
