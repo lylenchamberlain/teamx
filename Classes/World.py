@@ -33,6 +33,7 @@ class World(AbstractWorld):
 		self.loopAmount = 0
 		self.totalLateTrucks = 0
 		self.totalOnTimeTrucks = 0
+		self.lateAmounts = []
 		
 		#Set initial locations and capacities
 		for i in self.trucks:
@@ -53,21 +54,16 @@ class World(AbstractWorld):
 		self.sortList = []
 			
 			
-			
-			
 		
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
 		World.assignNodeDuties(self)
-		#print("LOCATION", World.findWarehouse(self, 'A'))
-		'''
-		This will give you a list of ALL cars which are in the system
-		'''
+		
+		#This will give you a list of ALL cars which are in the system
+		
 		self.trucks = self.getInitialTruckLocations()
 		for i,t in enumerate(self.trucks):
 			print("vehicle %d: %s"%(i, str(t)))
-		'''
-		We will run a simulation where "t" is the time index
-		'''
+
 			
 		#Sort the trucks in a list from smalles capacity to biggest
 		#Only sort once
@@ -126,6 +122,7 @@ class World(AbstractWorld):
 					
 				#Now we have all the stops it will need to do and matneeded, so we will now create a path
 				World.createPath(self, currentTruck, graphObject)
+				print("TESTS" , currentTruck.completePath)
 			#Can probably make this a function	
 			for truck in self.truckList:
 				
@@ -137,34 +134,39 @@ class World(AbstractWorld):
 						if truck.currentNode in truck.timeNeeded:
 							truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
 						
+						else:
+							truck.nextMoveTime = t + 1
 						
-							
-						
+						#Takes a while to travel edge to edge
+						#Test
+						#truck.nextMoveTime = truck.nextMoveTime + World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
+						nice = World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
+						truck.nextMoveTime = truck.nextMoveTime + nice
 						#Incorporate edge lengths:
 						#Get the path for the two nodes
 					
-						graphObject.shortest_path2(truck.currentNode, truck.completePath[truck.smallCounter - 1], self.Edges) 
+						#graphObject.shortest_path2(truck.currentNode, truck.completePath[truck.smallCounter - 1], self.Edges) 
 						
 						
-						truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
-						truckX = 800 * truckLocation[0]
-						truckY = 800 * truckLocation[1]
+					truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
+					truckX = 800 * truckLocation[0]
+					truckY = 800 * truckLocation[1]
 					#Display the current vertex of the truck
 					self.screen.blit(truck.ball, (truckX, truckY))
 			
 					#Got to end of path
-					print("cur", truck.currentNode, truck.finalNode, truck.completePath)
+					#print("cur", truck.currentNode, truck.finalNode, truck.completePath)
 					if (truck.currentNode == truck.finalNode):
-						print("LAST")
 						truck.status = 4
 						truck.currentPath = []
 						truck.completePath = []
 						truck.smallCounter = 0
 						#Determine if its on time
-						if (t < truck.dueDate):
+						if (t <= truck.dueDate):
 							self.totalOnTimeTrucks = self.totalOnTimeTrucks + 1
 						else:
 							self.totalLateTrucks = self.totalLateTrucks + 1
+							self.lateAmounts.append(t - truck.dueDate)
 						truck.nextMoveTime = 0
 
 			pygame.display.update()	
@@ -173,15 +175,47 @@ class World(AbstractWorld):
 
 				#This allows us to exit the game if we want
 			if World.quitGame(self, fps) == True:
-				print("LATE", self.totalLateTrucks)
-				print("ONTIME", self.totalOnTimeTrucks)
+
 				break				
-	
+			
+		print("profit", World.calculateProfit(self))	
+		print("LATE", self.totalLateTrucks)
+		print("ONTIME", self.totalOnTimeTrucks)	
+		print("Late amounts", self.lateAmounts)
+		
 	#Give it a vertex ID (its unique identifier) this will return the x and y value in a tuple
 	def nodeToCoordinate(self, node, worldVerticies):
 		for x in worldVerticies:
 			if x[0] == node:
 				return (x[1],x[2])
+			
+	def edgeTime(self, node1, node2):
+		answer =  2000
+		for mine in self.Edges:
+			#print("GOT HERE", mine[0], node1, mine[1], node2)
+
+			if (mine[0] == node1) and (mine[1] == node2):
+				print("FOUND IT")
+				print("MINE", mine[2])
+				answer = mine[2]
+				return mine[2]
+		print("RECURSIVE", mine[0], node1, mine[1], node2)
+		World.edgeTime(self, node2, node1)
+		return answer
+	
+	
+	def calculateProfit(self):
+		profit = 0
+		profit = (self.totalOnTimeTrucks + self.totalLateTrucks) * 1.5
+		penalty = 0
+		for ex in  self.lateAmounts:
+			calc = ex
+			calc = calc / 30
+			calc= int(calc)
+			calc = calc + 1
+			penalty = penalty + calc
+		profit = profit - (penalty * .1)
+		return profit
 		
 		
 	def sortList(self):
@@ -326,11 +360,21 @@ class World(AbstractWorld):
 		for theLine in c.productionProcess:
 			totalNeeded = totalNeeded + theLine['materialNeeded[tons]'] 
 		#Now that we know total needed grab a truck
+		currentTruck = 999
 		for aTruck in self.truckList:
 			if (aTruck.capacity >= totalNeeded and aTruck.status == 4):
 				currentTruck = aTruck
+				currentTruck.status = 1
 				return currentTruck
 			
+		if currentTruck == 999:		
+			for x in range(0, (len(self.truckList)- 1)):
+				x  = len(self.truckList) - 1 - x
+				if self.truckList[x] != 4:
+					currentTruck = self.truckList[x]
+					currentTruck.status = 1
+					return currentTruck
+				
 			
 			
 	def findLength(self, startNode, endNode):

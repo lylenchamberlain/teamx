@@ -24,7 +24,10 @@ edgeGraph = Graph()
 for x in range(len(myWorld.Edges)):
     Graph.add_edge(edgeGraph, myWorld.Edges[x][0], myWorld.Edges[x][1], myWorld.Edges[x][2], myWorld.Edges)
     
-print("myWorld.edges", myWorld.Edges[0])
+    
+for e in myWorld.Edges:
+    print("EEE" ,e)
+print("myWorld.edges", myWorld.Edges[15])
 
 print("myWorld.verticies",myWorld.Verticies)
 

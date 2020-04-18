@@ -50,6 +50,8 @@ class Animation():
         self.nextMoveTime = 0
         self.dueDate = 0
         self.completePath = []
+        self.truckX = 0
+        self.truckY = 0
 
 
         
