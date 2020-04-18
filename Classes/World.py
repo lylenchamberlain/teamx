@@ -139,7 +139,7 @@ class World(AbstractWorld):
 						#Test
 						#truck.nextMoveTime = truck.nextMoveTime + World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
 						nice = World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
-						#truck.nextMoveTime = truck.nextMoveTime + nice
+						truck.nextMoveTime = truck.nextMoveTime + nice
 						#Incorporate edge lengths:
 						#Get the path for the two nodes
 					
@@ -188,20 +188,31 @@ class World(AbstractWorld):
 				return (x[1],x[2])
 			
 	def edgeTime(self, node1, node2):
-		try:
-			answer =  2000
-			for mine in self.Edges:
-				#print("GOT HERE", mine[0], node1, mine[1], node2)
-	
-				if (mine[0] == node1) and (mine[1] == node2):
-					answer = mine[2]
-					return mine[2]
-			World.edgeTime(self, node2, node1)
-		except:
-			for trike in self.truckList:
-				if trike.status != 4:
-					print("HEY")
-		return answer
+
+		answer =  2000
+		if node1 == node2:
+			return 0
+		for mine in self.Edges:
+			print("GOT HERE", mine[0], node1, mine[1], node2)
+			'''for any in self.truckList:
+				if any.status != 4:
+					print("TOTAL trucks")
+			'''
+			if (mine[0] == node1) and (mine[1] == node2):
+				print("FOUND IT", mine[2])
+				answer = mine[2]
+				return mine[2]
+			
+		return World.edgeTime2(self, node2, node1)
+		
+		
+	def edgeTime2(self, node1, node2):
+		
+		for my in self.Edges:
+			if(my[0] == node1) and (my[1] == node2):
+				return	my[2]
+		
+			
 	
 	
 	def calculateProfit(self):
