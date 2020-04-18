@@ -122,7 +122,6 @@ class World(AbstractWorld):
 					
 				#Now we have all the stops it will need to do and matneeded, so we will now create a path
 				World.createPath(self, currentTruck, graphObject)
-				print("TESTS" , currentTruck.completePath)
 			#Can probably make this a function	
 			for truck in self.truckList:
 				
@@ -130,7 +129,6 @@ class World(AbstractWorld):
 					if (t == truck.nextMoveTime):
 						truck.smallCounter = truck.smallCounter + 1
 						truck.currentNode = truck.completePath[truck.smallCounter]
-						
 						if truck.currentNode in truck.timeNeeded:
 							truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
 						
@@ -141,7 +139,7 @@ class World(AbstractWorld):
 						#Test
 						#truck.nextMoveTime = truck.nextMoveTime + World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
 						nice = World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
-						truck.nextMoveTime = truck.nextMoveTime + nice
+						#truck.nextMoveTime = truck.nextMoveTime + nice
 						#Incorporate edge lengths:
 						#Get the path for the two nodes
 					
@@ -190,17 +188,19 @@ class World(AbstractWorld):
 				return (x[1],x[2])
 			
 	def edgeTime(self, node1, node2):
-		answer =  2000
-		for mine in self.Edges:
-			#print("GOT HERE", mine[0], node1, mine[1], node2)
-
-			if (mine[0] == node1) and (mine[1] == node2):
-				print("FOUND IT")
-				print("MINE", mine[2])
-				answer = mine[2]
-				return mine[2]
-		print("RECURSIVE", mine[0], node1, mine[1], node2)
-		World.edgeTime(self, node2, node1)
+		try:
+			answer =  2000
+			for mine in self.Edges:
+				#print("GOT HERE", mine[0], node1, mine[1], node2)
+	
+				if (mine[0] == node1) and (mine[1] == node2):
+					answer = mine[2]
+					return mine[2]
+			World.edgeTime(self, node2, node1)
+		except:
+			for trike in self.truckList:
+				if trike.status != 4:
+					print("HEY")
 		return answer
 	
 	
@@ -467,7 +467,10 @@ class World(AbstractWorld):
 			
 
 			aTruck.stops.remove(nextNode)	
-		aTruck.completePath.append(aTruck.finalNode)
+		lastPath = graphObject.shortest_path2(nextNode, aTruck.finalNode, self.Edges)
+		
+		for numey in lastPath:
+			 aTruck.completePath.append(numey)
 	
 				#It is done with the loop, set truck status to 4
 		
