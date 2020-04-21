@@ -52,6 +52,7 @@ class Animation():
         self.completePath = []
         self.truckX = 0
         self.truckY = 0
+        self.smallIndexTime = {}
 
 
         
