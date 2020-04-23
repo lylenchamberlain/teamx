@@ -56,6 +56,26 @@ class World(AbstractWorld):
 			
 			
 		
+		
+	'''
+	1. run simulation
+	2. assignNodeDuties (marks which vertexes are universal warehouses and process lines
+	3. getInitialTruckLocations (gets the starting vertexes of the trucks)
+	4. getNewOrdersForAGivenTime (returns all orders)
+	5. drawBackbone (draws the edges and nodes onto the screen)
+	6. chooseTruck (chooses the truck to give to the specific new order)
+	7. completeTruckReset(sets all truck stats back to default to make sure no previous loads are still on truck)
+	8. assignVertexFacts2 (assigns the locations of process lines and warehouses the truck needs to go to.
+	9. create_path2(gives the shortest path for two nodes. In this case that means it creates the shortest path to hit all the nodes)
+	10. edgeTime (returns the time it takes to go from one node to another
+	11. nodeToCoordinates (for animation, allows us to print node in correct spot on screen)
+	21. truckIsDone (sets truck to done and empties it so its ready for the next order
+	
+	'''
+	
+		
+		
+		
 	def runSimulation(self, fps=1, initialTime=5*60, finalTime=23*60):
 
 		#Assigns whether vertices are process lines or warehouses
@@ -218,7 +238,7 @@ class World(AbstractWorld):
 				#Reset truck to factory deault
 				World.completeTruckReset(self, currentTruck, currentTruck.currentNode, currentTruck.capacity)
 
-				#Move immediately			
+				#Move immediately			s
 				currentTruck.nextMoveTime =  t
 				currentTruck.status = 1
 				currentTruck.finalNode = c.finalLocation
@@ -252,8 +272,7 @@ class World(AbstractWorld):
 						
 						#Takes a while to travel edge to edge
 						#Test
-						#truck.nextMoveTime = truck.nextMoveTime + World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
-						#print("Trook", truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter])
+
 						nice = World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter], 1)
 						indexToCheck = truck.smallCounter - 1
 						self.transportationCost = self.transportationCost + (((50 + (5 * nice * truck.currentLoadSum[indexToCheck])))* .00001)
