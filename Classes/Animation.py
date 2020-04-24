@@ -55,6 +55,12 @@ class Animation():
         self.smallIndexTime = {}
         self.currentLoadSum = {}
         
+        self.distanceTraveled = 0
+        self.distanceToTravel = 0
+        self.distanceMultiplier = 0
+        self.edgePath = 0
+        self.graphingPath = []
+        self.nextIndexTime = 0
 
 
         
