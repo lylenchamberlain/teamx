@@ -35,6 +35,9 @@ class World(AbstractWorld):
 		self.totalOnTimeTrucks = 0
 		self.lateAmounts = []
 		self.transportationCost = 0
+		self.trainPaths = []
+		self.constructionCost = 0
+		
 		
 		#Set initial locations and capacities
 		for i in self.trucks:
@@ -191,7 +194,11 @@ class World(AbstractWorld):
 		print("ONTIME", self.totalOnTimeTrucks)	
 		print("Late amounts", self.lateAmounts)
 		print("transportation Costs", self.transportationCost)
-		
+	
+	'''
+
+	FOR TRAIN, NOT CAR
+	'''
 	def runSimulationTrain(self, fps=1, initialTime=5*60, finalTime=23*60):
 
 		#Assigns whether vertices are process lines or warehouses
@@ -250,7 +257,7 @@ class World(AbstractWorld):
 				#Okay now we assign what each vertex requires
 				#Now we have all the stops it will need to do and matneeded, so we will now create a path
 				''''''
-				World.createPath(self, currentTruck, graphObject, newOrders)
+				World.createTrainPath(self, currentTruck, graphObject, newOrders)
 			#Can probably make this a function	
 			
 			for truck in self.truckList:
@@ -258,24 +265,26 @@ class World(AbstractWorld):
 				
 				if (truck.status != 4):
 					if (t == truck.nextMoveTime):
+						print("TROK", truck.completePath)
 						
 						truck.smallCounter = truck.smallCounter + 1
 						#Increase and then assign current node
 						truck.currentNode = truck.completePath[truck.smallCounter]
 						#Check if the small counter has a time
 						if (truck.smallCounter in truck.smallIndexTime) and (truck.currentNode in truck.timeNeeded):
-							truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
+							truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode] + 2
 
 						
 						else:
+
 							truck.nextMoveTime = t
 						
 						#Takes a while to travel edge to edge
 						#Test
 
-						nice = World.edgeTime(self, truck.completePath[truck.smallCounter - 1], truck.completePath[truck.smallCounter], 1)
+						nice = 2
 						indexToCheck = truck.smallCounter - 1
-						self.transportationCost = self.transportationCost + (((50 + (5 * nice * truck.currentLoadSum[indexToCheck])))* .00001)
+						self.transportationCost = 0
 						'''
 						#so nice + the load at the previous node
 						
@@ -301,11 +310,18 @@ class World(AbstractWorld):
 			if World.quitGame(self, fps) == True:
 				break				
 			
-		print("profit", World.calculateProfit(self))	
+		for xe in self.trainPaths:
+			adder =  World.edgeTime(self, xe[0], xe[1], 1)
+			self.constructionCost = self.constructionCost + adder
+			
+			
+		print("profit", World.calculateProfit(self)- self.constructionCost)	
 		print("LATE", self.totalLateTrucks)
 		print("ONTIME", self.totalOnTimeTrucks)	
 		print("Late amounts", self.lateAmounts)
 		print("transportation Costs", self.transportationCost)
+		print("building costs", self.constructionCost)
+	
 	
 	#Give it a vertex ID (its unique identifier) this will return the x and y value in a tuple
 	def nodeToCoordinate(self, node, worldVerticies):
@@ -344,7 +360,6 @@ class World(AbstractWorld):
 			if ((mine[0] == node1) and (mine[1] == node2)) or ((mine[0] == node2) and (mine[1] == node1)):
 				answer = mine[2]
 				return mine[2]
-		print("error")
 		loopCount = loopCount + 1
 		return 800
 		
@@ -450,6 +465,7 @@ class World(AbstractWorld):
 				ProductionLines.append(t)
 				
 				j = j + 1
+				
 		self.ProductionLines = ProductionLines
 		return ProductionLines
 	
@@ -571,7 +587,6 @@ class World(AbstractWorld):
 			currentTruck.stops.append(processLinesNeeded)
 			#print("PROSO", processLineNeeded)
 			currentTruck.stops.append(warehousesNeeded)
-			print("appley", warehousesNeeded, processLinesNeeded)
 			
 	
 			#now lets associate this vertex location with the material needed and the amount
@@ -592,6 +607,40 @@ class World(AbstractWorld):
 				currentTruck.amountNeeded[b] = x['materialNeeded[tons]']
 				#Time needed at node value
 				currentTruck.timeNeeded[b] = x['processingTime']
+				
+	#Use this for train, vs. assign vertex facts which is for non train		
+	def assignTrainVs(self, c, currentTruck):
+		#For each step in the new order
+		for x in c.productionProcess:
+			#material needed in the step
+			matNeeded = x['resourceNeeded']
+			#Gives index of the process line and warehousewe'll use
+			processLineNeeded = World.findProcessLine(self, x['processinLine'])
+			warehouseNeeded = World.findWarehouse(self, matNeeded)
+			#Make them both stops
+			currentTruck.stops.append(processLineNeeded)
+			#print("PROSO", processLineNeeded)
+			currentTruck.stops.append(warehouseNeeded)
+			
+	
+			#now lets associate this vertex location with the material needed and the amount
+			#The following usee the index as the node value of the process line
+			#Gives material needed at node
+			a = warehouseNeeded
+			#currentTruck.timeNeeded[processLineNeeded] = 0
+			#For warehouse node value
+			currentTruck.timeNeeded[a]= 0
+			#Amount of material needed
+			currentTruck.totalNeeded[a] = x['materialNeeded[tons]']
+			#Specific material needed
+			currentTruck.warehouseType[a] = matNeeded
+			
+			b = processLineNeeded
+			currentTruck.typeNeeded[b] = matNeeded
+			#Gives amount needed at node
+			currentTruck.amountNeeded[b] = x['materialNeeded[tons]']
+			#Time needed at node value
+			currentTruck.timeNeeded[b] = x['processingTime']
 		
 	
 	def drawBackbone(self):
@@ -650,149 +699,179 @@ class World(AbstractWorld):
 		for xx in aTruck.loadDict:
 			sum = sum + aTruck.loadDict[xx]
 		return sum
-		
-
+	
+	def isTrainTracks(self, node1, node2):
+		for i in self.trainPaths:
+			if (i[0] == node1 and i[1] == node2) or (i[1] == node1 and i == node2):
+				return True
+			
+		return False
+				
+				
+	'''
+	FOR TRAIN  ONLY
+	'''
 	
 	def createTrainPath(self, aTruck, graphObject, newOrders):
 			
-			
-			#Test vertex is the node that wew branch off to find other ones
-			testVertex = aTruck.currentNode
-			#These values are to assure that shorter paths are found and we never keep this one
-			shortestLength = 100000
-			pathToJudge = [1,1,1,1,1,1,1,1,1,1,1,1,1,12,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,23,3,1,1,1,1,1,1,1]
-			nextNode = 10000000000
-			#The first step of the path should be the trucks current vertex
-			aTruck.completePath.append(testVertex)
-			
-			#While their are still stops, because we remove every stop when we add it to truck path
-			while len(aTruck.stops) > 0:
-				#Make sure this is the longest path and it will be changed with a smaller option
-				pathToJudge = [1,1,1,1,1,1,1,1,1,1,1,1,1,12,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,23,3, 2,2,2,2,2,2,2,2,2]
-				#For every stop in the truck's list of stops
-				for x in aTruck.stops:
+		#Test vertex is the node that wew branch off to find other ones
+		testVertex = aTruck.currentNode
+		#These values are to assure that shorter paths are found and we never keep this one
+		shortestLength = 100000
+		pathToJudge = [1,1,1,1,1,1,1,1,1,1,1,1,1,12,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,23,3,1,1,1,1,1,1,1]
+		nextNode = 10000000000
+		#The first step of the path should be the trucks current vertex
+		aTruck.completePath.append(testVertex)
+		removingArray = []
+		
+		#While their are still stops, because we remove every stop when we add it to truck path
+		while len(aTruck.stops) > 0:
+			#Make sure this is the longest path and it will be changed with a smaller option
+			pathToJudge = [1,1,1,1,1,1,1,1,1,1,1,1,1,12,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,23,3, 2,2,2,2,2,2,2,2,2]
+			#For every stop in the truck's list of stops
+			array = 0
+			for x in aTruck.stops:
+				for y in x:
+					while False:
+						pass				
+		
+				#don't try to make a path from one vertex to the same one because it won't work, instead create a blank path
+				if(testVertex != y):
+					quickGraph = graphObject.shortest_path2(testVertex, y, self.Edges)
+					skip = 0
+					#print("statement", quickGraph)
+				else:
+					#Don't route from the path we're at to the same one, create a graph of length 0, and skip the loop that trys to find a shorter loop
+					quickGraph = []
+					#Don't bother looking at other paths
+					#Set this node as the shortest path
+					nextNode = y
+					nextNode = testVertex
+					removingArray = x
+					#Don't bother finding a shorter path
+					skip = 1
 	
-					#don't try to make a path from one vertex to the same one because it won't work, instead create a blank path
-	
-						#print("statement", quickGraph)
-					if (testVertex == x):
-						#Don't route from the path we're at to the same one, create a graph of length 0, and skip the loop that trys to find a shorter loop
-						quickGraph = []
-						#Don't bother looking at other paths
-						#Set this node as the shortest path
-						nextNode = x
-						nextNode = testVertex
-						#Don't bother finding a shorter path
-						skip == 1
-					#skip is 0 if we haven't found a path of length 0
-					if skip == 0:
+				#skip is 0 if we haven't found a path of length 0
+				if skip == 0:
+					
+					#quick graph is the path we create from one node to another
+					#The path to judge is the current shortest path
+					
+					#Check if the quick graph is less than the one we're judging
+					if (len(quickGraph) < len(pathToJudge)):
+						#We found a shorter path, lets see if its valid before we do anything
+						#Check if its a key for type needed, only processLines will be in this graph
+						if y in aTruck.typeNeeded:
+							#If here it is a processLine and needs to check if the truck has the required warehouse materials
+							#first what type of resource does it need?
+							print(aTruck.typeNeeded)
+							
 						
-						#quick graph is the path we create from one node to another
-						#The path to judge is the current shortest path
-	
-							#We found a shorter path, lets see if its valid before we do anything
-							#Check if its a key for type needed, only processLines will be in this graph
-							if x in aTruck.typeNeeded:
-								#If here it is a processLine and needs to check if the truck has the required warehouse materials
-								#first what type of resource does it need?
-								theTypeNeeded = aTruck.typeNeeded[x]
-								
-								#See if we have enough in the truck
-								if aTruck.loadDict[theTypeNeeded] >= aTruck.amountNeeded[x]:
-									#If here we have enough and its a valid path
-									nextNode = x
-									pathToJudge = quickGraph
-								else:
-									#If we don't have enough materials for the the process line we can't add this to our path yet
-									continue
-	
-							#If on our stop list and not a processs line, its a warehouse
-							#Check Load
+							theTypeNeeded = aTruck.typeNeeded[y]
+							
+							#See if we have enough in the truck
+							if aTruck.loadDict[theTypeNeeded] >= aTruck.amountNeeded[y]:
+								#If here we have enough and its a valid path
+								nextNode = y
+								pathToJudge = quickGraph
+								removingArray = x
 							else:
-								#check to see if the truck has enough capacity
-								#Find how much it has now
+								#If we don't have enough materials for the the process line we can't add this to our path yet
+								continue
 	
-								sum = World.truckLoad(self, aTruck)
-								#Now that we have the sum, we can use it to check 
-								if (aTruck.capacity >=  (aTruck.totalNeeded[x] + sum)):
-									#it has enough capacity to pick up the capacity needed
-									#this is a valid path length to check
-									nextNode = x
-									pathToJudge = quickGraph
+						#If on our stop list and not a processs line, its a warehouse
+						#Check Load
+						else:
+							#check to see if the truck has enough capacity
+							#Find how much it has now
 	
-				#end of for loop, so by now we have found the shortest valid path to the vertex we're testing (testVertex)
-				#Append the list but don't use the first value, use passer so we don't add the first element twice
-				passer = 0
-				#We're gonna have to add transporting costs
-				transportingCost = World.transportCost(self, aTruck)
-				
-				sum = World.truckLoad(self, aTruck)
-				aTruck.currentLoadSum[0] = 0
-				for v in pathToJudge:
-					#This if  statement skips the append of the first element in pathToJude
-					if passer != 0:
-						aTruck.completePath.append(v)
-						#We also record the trucks currentLoad at this point (it won't change)
-						indexer = len(aTruck.completePath) - 1 #This is the index at the new point
-						aTruck.currentLoadSum[indexer] = sum
-					else:
-						passer = 1
-					
-					
-				#how do we just do the new stuff?
-				
-				#Make sure the graph has elements or else we skipped the order
-				#The complete path is appended every time we have a warehouse or process lines
-				
-				if (len(aTruck.completePath)!= 0):
-					#At the end  of each path portion we have an activity that needs to  be done. We add a arbitrary value of 1 for now
-					#The more important part of this is that it saves the index in the path where an action is needed.
-					doSomethingHere = len(aTruck.completePath) - 1
-					aTruck.timeNeeded[doSomethingHere] = 1
-					#We also need to say the capacity may change here
-					'''
-					currentLoad = World.truckLoad(self, aTruck)
-					aTruck.currentLoadSum[doSomethingHere] = currentLoad
-					'''
-					
-				#This will mean its a processLine if it has a typeNeeded
-				if nextNode in aTruck.typeNeeded:
+							sum = World.truckLoad(self, aTruck)
+							#Now that we have the sum, we can use it to check 
+							if (aTruck.capacity >=  (aTruck.totalNeeded[y] + sum)):
+								#it has enough capacity to pick up the capacity needed
+								#this is a valid path length to check
+								nextNode = y
+								pathToJudge = quickGraph
+								removingArray = x
 	
-					#Now we're at the test vertex
-					#Decrease the values in the truck
-					theTypeNeeded = aTruck.typeNeeded[nextNode]
-					pastLoad = aTruck.loadDict[theTypeNeeded]
-					nowLoad = pastLoad - aTruck.amountNeeded[nextNode]
-					aTruck.loadDict[theTypeNeeded] = nowLoad
-		
-					
-				#If not a processLine its a warehouse
-				else:
-					#We can pick up the resources now
-					resourceType = aTruck.warehouseType[nextNode]
-					#Add the resources to the trucks load
-					aTruck.loadDict[resourceType] = aTruck.loadDict[resourceType] + aTruck.totalNeeded[nextNode]
-	
-				
-				#Once we add the truck to the path and take the necessary action, remove it so it can't be used again 			
-				aTruck.stops.remove(nextNode)
-				testVertex =  nextNode
-				
-		
-			#At the very end add a path into the job order destination
-			lastPath = graphObject.shortest_path2(nextNode, aTruck.finalNode, self.Edges)
+			#end of for loop, so by now we have found the shortest valid path to the vertex we're testing (testVertex)
+			#Append the list but don't use the first value, use passer so we don't add the first element twice
+			passer = 0
+			#We're gonna have to add transporting costs
+			transportingCost = World.transportCost(self, aTruck)
 			
+			sum = World.truckLoad(self, aTruck)
+			aTruck.currentLoadSum[0] = 0
+
+			aTruck.completePath.append(nextNode)
+			#We also record the trucks currentLoad at this point (it won't change)
+			indexer = len(aTruck.completePath) - 1 #This is the index at the new point
+			aTruck.currentLoadSum[indexer] = sum
+
+				
+				
+			#how do we just do the new stuff?
 			
-			sumNow = World.truckLoad(self, aTruck)
-			#This just makes sure we add the last path to the complete truck path, and we don't double add the last elemeent
-			start = 0
-			for numey in lastPath:
-				if start == 1:
-				 	aTruck.completePath.append(numey)
-				 	aTruck.currentLoadSum[len(aTruck.completePath) - 1] = sumNow
-				else:
-					start = 1
+			#Make sure the graph has elements or else we skipped the order
+			#The complete path is appended every time we have a warehouse or process lines
+			
+
+			#At the end  of each path portion we have an activity that needs to  be done. We add a arbitrary value of 1 for now
+			#The more important part of this is that it saves the index in the path where an action is needed.
+			doSomethingHere = len(aTruck.completePath) - 1
+			aTruck.timeNeeded[doSomethingHere] = 1
+			#We also need to say the capacity may change here
+			'''
+			currentLoad = World.truckLoad(self, aTruck)
+			aTruck.currentLoadSum[doSomethingHere] = currentLoad
+				'''
+				
+			#This will mean its a processLine if it has a typeNeeded
+			if nextNode in aTruck.typeNeeded:
+	
+				#Now we're at the test vertex
+				#Decrease the values in the truck
+				theTypeNeeded = aTruck.typeNeeded[nextNode]
+				pastLoad = aTruck.loadDict[theTypeNeeded]
+				nowLoad = pastLoad - aTruck.amountNeeded[nextNode]
+				aTruck.loadDict[theTypeNeeded] = nowLoad
+	
+				
+			#If not a processLine its a warehouse
+			else:
+				#We can pick up the resources now
+				resourceType = aTruck.warehouseType[nextNode]
+				#Add the resources to the trucks load
+				aTruck.loadDict[resourceType] = aTruck.loadDict[resourceType] + aTruck.totalNeeded[nextNode]
+	
+			
+			#Once we add the truck to the path and take the necessary action, remove it so it can't be used again 			
+			aTruck.stops.remove(removingArray)
+			testVertex =  nextNode
+			
+	
+
 		
+		
+		sumNow = World.truckLoad(self, aTruck)
+		#This just makes sure we add the last path to the complete truck path, and we don't double add the last elemeent
+
+
+		aTruck.completePath.append(aTruck.finalNode)
+		aTruck.currentLoadSum[len(aTruck.completePath) - 1] = sumNow
+		
+		for ak in range(0, len(aTruck.completePath)- 2):
+			if World.isTrainTracks(self, aTruck.completePath[ak], aTruck.completePath[ak + 1]):
+				continue
+			else:
+				self.constructionCost =  self.constructionCost + 2
+				self.trainPaths.append([aTruck.completePath[ak], aTruck.completePath[ak + 1]])
+				print(self.trainPaths)
+			
+
+	
+
+				
 	def createPath(self, aTruck, graphObject, newOrders):
 		'''
 		profit 312.89264999999915
@@ -852,6 +931,9 @@ class World(AbstractWorld):
 						if y in aTruck.typeNeeded:
 							#If here it is a processLine and needs to check if the truck has the required warehouse materials
 							#first what type of resource does it need?
+							print(aTruck.typeNeeded)
+							
+						
 							theTypeNeeded = aTruck.typeNeeded[y]
 							
 							#See if we have enough in the truck

@@ -32,8 +32,9 @@ print("myWorld.edges", myWorld.Edges[15])
 print("myWorld.verticies",myWorld.Verticies)
 
 
-#myWorld.runSimulation(10)
-myWorld.runSimulationTrain(10)
+myWorld.runSimulation(10)
+#This is the simulation foor the train
+#myWorld.runSimulationTrain(10)
 
 
 
