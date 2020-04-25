@@ -136,85 +136,77 @@ class World(AbstractWorld):
 				World.assignVertexFacts2(self, c, currentTruck)	
 				#Okay now we assign what each vertex requires
 				#Now we have all the stops it will need to do and matneeded, so we will now create a path
-				''''''
 				World.createPath(self, currentTruck, graphObject, newOrders)
 			#Can probably make this a function	
 			
 			for truck in self.truckList:
-				clearGraph = 0
+				
 				if (truck.status != 4):
 					#if the trucks ready to move
 					if (truck.nextMoveTime == t):
 
-						#if at end of path need a new graphing path
-												
+						#if at end of path need a new graphing path					
 						if (len(truck.graphingPath) - 1) == truck.graphingIndex:
-							truck.graphingPath = []
-							truck.smallCounter = truck.smallCounter + 1
-							truck.graphingIndex = 0
-							#check if it has a path, there is not for the condition
 							
-						if(len(truck.graphingPath) != 0):
-							#it has a path so increase the counter
-							truck.graphingIndex = truck.graphingIndex + 1
+							#we know we could be at the end of the path, or the end of everything
+							#check to see if we're completely done
+							if (truck.smallCounter >= len(truck.completePath) - 1):
+								World.truckIsDone(self, truck, t)
+								truck.nextMoveTime = 0
 							
-							#check if this new index is the end
-							if(truck.graphingIndex == (len(truck.graphingPath) - 1)):
-								
-								
-								#This is the end of the path, so clear the graphing path but still graph the currentNode
-								#truck.graphingPath = []
-								clearGraph = 1
-
-								#Go to the next major node to create a path
+							#not completely done. We need to give it a new path	
+							else:
+								truck.graphingPath = []		
+								truck.graphingPath = World.getGraphingPath(self, truck, truck.completePath[truck.smallCounter], truck.completePath[truck.smallCounter + 1])
+								truck.graphingIndex = 0
 								truck.smallCounter = truck.smallCounter + 1
-
-								
-							#current node is where its at
-
-							#truck.currentNode = truck.graphingPath[truck.graphingIndex]
-
-							
-						else:
-							#create a graphing path using the trucks currentnode and the next one
-							truck.graphingPath = World.getGraphingPath(self, truck, truck.completePath[truck.smallCounter], truck.completePath[truck.smallCounter + 1])
-							#currentNode = first element on graphing path
-
-							truck.graphingIndex = 0
-							#truck.currentNode =  truck.graphingPath[truck.graphingIndex]
-							truck.nextMoveTime = t + 1
+								truck.nextMoveTime = t + 1
+								#check if we need a later start time for this new path
+								if (truck.smallCounter in truck.smallIndexTime) and (truck.completePath[truck.smallCounter] in truck.timeNeeded):
+									truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
+									asdf = asdfasd
 									
+									
+			
+								indexToCheck = truck.smallCounter 
+		
+								self.transportationCost = self.transportationCost + (((50 + (5  * truck.currentLoadSum[indexToCheck])))* .00001)
+					
+							#check if it has a path, there is not for the condition
+						
+						#not at end of graphing path
+						#this means it can be we haven't made a path, or we have and can just go to the next one
+						#start out with has a path	
+						else:
+							if(len(truck.graphingPath) != 0):
+								#it has a path so increase the counter
+								truck.graphingIndex = truck.graphingIndex + 1
+								truck.nextMoveTime = t + 1
 							
-						
-						
-						
+							#else, it doesn't have a path. We need to make one
+							else:
+								truck.graphingPath = []
+								truck.graphingPath = World.getGraphingPath(self, truck, truck.completePath[truck.smallCounter], truck.completePath[truck.smallCounter + 1])
+								truck.graphingIndex =  0
+								truck.smallCounter = truck.smallCounter + 1
+								truck.nextMoveTime = t + 1
+										
+
 						#Check if the small counter has a time
+						'''come to this later
 						if (truck.smallCounter in truck.smallIndexTime) and (truck.currentNode in truck.timeNeeded):
 							truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
-
-						
-
-
-						indexToCheck = truck.smallCounter 
-
-						self.transportationCost = self.transportationCost + (((50 + (5  * truck.currentLoadSum[indexToCheck])))* .00001)
 						'''
-						#so nice + the load at the previous node
-						
-						'''
-						#check to see if we're completely done
-						if (truck.smallCounter >= len(truck.completePath) - 1):
-							World.truckIsDone(truck, t)
-							aaa= iiiiw
+
 
 
 				#	truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
-					print("path", truck.graphingPath, truck.graphingIndex)
 					truckLocation = truck.graphingPath[truck.graphingIndex]
 					truckX = 800 * truckLocation[0]
 					truckY = 800 * truckLocation[1]
-					#Display the current vertex of the truck
 					self.screen.blit(truck.ball, (truckX, truckY))
+					print("MOVENOW", truck.nextMoveTime - t)
+					
 					
 
 				#Got to end of path
@@ -237,139 +229,7 @@ class World(AbstractWorld):
 		print("transportation Costs", self.transportationCost)
 		return
 	
-	'''	def runSimulationSave(self, fps=1, initialTime=5*60, finalTime=23*60):
 
-			#Assigns whether vertices are process lines or warehouses
-			World.assignNodeDuties(self)
-			
-			#This will give you a list of ALL cars which are in the system
-			
-			
-			self.trucks = self.getInitialTruckLocations()
-			for i,t in enumerate(self.trucks):
-				print("vehicle %d: %s"%(i, str(t)))
-	
-				
-			#Sort the trucks in a list from smalles capacity to biggest
-			#Only sort once
-			if self.loopAmount != 1:
-				World.sortList(self)
-				self.loopAmount = 1
-					
-			for t in range(initialTime,finalTime):	
-				print("\n\n Time: %02d:%02d"%(t/60, t%60))
-	
-				# each minute we can get a few new orders
-				newOrders = self.getNewOrdersForGivenTime(t)
-				print("New orders:")
-				#Let's graph the truck movements here
-				
-				
-				for c in newOrders:
-					print(c)
-					print(c.productionProcess)
-					print(c.finalLocation)				#I think we should add paths here for specific vehicles
-					
-				#Draw the edges and vertexes
-				World.drawBackbone(self)
-				graphObject = Graph()
-				
-				for c in newOrders:
-					
-					skip = 0
-					#Choose which truck to use
-					currentTruck = World.chooseTruck(self, c)
-					#If no trucks available
-					#Reset truck to factory deault
-					World.completeTruckReset(self, currentTruck, currentTruck.currentNode, currentTruck.capacity)
-	
-					#Move immediately			
-					currentTruck.nextMoveTime =  t
-					currentTruck.status = 1
-					currentTruck.finalNode = c.finalLocation
-					#give it a due date
-					currentTruck.dueDate = t + 60				
-					
-					#
-					World.assignVertexFacts2(self, c, currentTruck)	
-					#Okay now we assign what each vertex requires
-					#Now we have all the stops it will need to do and matneeded, so we will now create a path
-					''''''
-					World.createPath(self, currentTruck, graphObject, newOrders)
-				#Can probably make this a function	
-				
-				for truck in self.truckList:
-					
-					
-					if (truck.status != 4):
-						if (truck.nextIndexTime == t):
-							
-							truck.smallCounter = truck.smallCounter + 1
-							#Increase and then assign current node
-							truck.currentNode = truck.completePath[truck.smallCounter]
-							#Check if the small counter has a time
-							if (truck.smallCounter in truck.smallIndexTime) and (truck.currentNode in truck.timeNeeded):
-								truck.nextMoveTime = t + truck.timeNeeded[truck.currentNode]
-	
-							
-							else:
-								truck.nextMoveTime = t+1
-							
-	
-							indexToCheck = truck.smallCounter - 1
-	
-							self.transportationCost = self.transportationCost + (((50 + (5 * length * truck.currentLoadSum[indexToCheck])))* .00001)
-							
-							#so nice + the load at the previous node
-							
-							
-							truck.nextMoveTime = truck.nextMoveTime + length
-							
-						
-			
-						nowPoint = truck.completePath[truck.smallCounter]
-						lastPoint = truck.completePath[truck.smallCounter - 1]
-						
-						#Length of edge						
-						length = World.edgeTime(self,lastPoint, nowPoint, 1)
-						#Yu is the array of points in a path
-						edgePath  = World.edgePath(self, lastPoint, nowPoint)
-						#yu[0] = yu[0] + 2
-	
-						#this gives the total distance it needs to travel
-						truck.distanceToTravel = World.calculateEdgeDistance(self, edgePath)
-						
-						World.getGraphingPath(self, edgePath, self.distanceToTravel, length, lastPoint, nowPoint)				
-						#Gives how long the path takes
-						
-							
-						truckLocation = World.nodeToCoordinate(self,truck.currentNode, self.Verticies)
-						truckX = 800 * truckLocation[0]
-						truckY = 800 * truckLocation[1]
-						#Display the current vertex of the truck
-						self.screen.blit(truck.ball, (truckX, truckY))
-					else:
-						self.screen.blit(truck.ball(5000,5000))
-					#Got to end of path
-					#print("cur", truck.currentNode, truck.finalNode, truck.completePath)
-					if (truck.smallCounter == (len(truck.completePath) - 2)):
-						World.truckIsDone(self, truck, t)
-	
-				pygame.display.update()	
-				self.screen.fill((255,255,255))	
-				World.drawScoreboard(self, t)
-		
-						#This allows us to exit the game if we want
-				if World.quitGame(self, fps) == True:
-					break				
-				
-			print("profit", World.calculateProfit(self))	
-			print("LATE", self.totalLateTrucks)
-			print("ONTIME", self.totalOnTimeTrucks)	
-			print("Late amounts", self.lateAmounts)
-			print("transportation Costs", self.transportationCost)
-		'''
-	
 	#Give it a vertex ID (its unique identifier) this will return the x and y value in a tuple
 	def nodeToCoordinate(self, node, worldVerticies):
 		for x in worldVerticies:
@@ -390,20 +250,14 @@ class World(AbstractWorld):
 		#distance = total distance a truck with folllow along it
 		#edge time = time it takes to do an edge
 		#first set and second set give the 
-
-
-		
 		#Length of edge						
 		edgeTime = World.edgeTime(self,firstNode, secondNode, 1)
 
-		#Yu is the array of points in a path
+		#truck.edgePath is the array of points in a path
 		truck.edgePath  = World.edgePath(self, firstNode, secondNode)
-
+		print("firstNode ", firstNode, "secondNode", secondNode, "edgeTime ", edgeTime)
 		#this gives the total distance it needs to travel
 		totalDistance = World.calculateEdgeDistance(self, truck.edgePath)
-		if (totalDistance == 0):
-			print(truck.edgePath)
-			a = asdlkfjdsgkjjh
 		
 		sum = 0
 		multiplier = totalDistance / edgeTime
@@ -413,63 +267,75 @@ class World(AbstractWorld):
 		#self.graphingPath.append(prev)
 		
 		truck.graphingPath = []
-		print("starting")
-		print("edge path", truck.edgePath)
-		print("total distance ", totalDistance)
-		print("Edge Time ", edgeTime)
-		for yt in truck.edgePath:
-			#Skip the first set
-			if (passer == 1):
-				passer = 0
-			else:
-				shortDist = World.pythag(self, prev, yt)
 
-				sum = sum + shortDist
-				print("new distance ", sum)
-				#See if we've gone over the multiplier length, otherwise keep going for the path
-				if (sum >= multCheck):
-					#check by how much we've gone over
-					overage = sum - multCheck
-					#Estimate the percentage of the last path added that is
-					percentage = overage / shortDist
-					#Find the first set - second set
-					addIt = World.findPointToAdd(self, percentage, prev, yt)
-					print("ADDIT", addIt)
-					truck.graphingPath.append(addIt)
-					multcheck = multCheck +  multiplier
-				#add another part of the path	
-				else: 
-					prev = yt
+		#Do the loop until we have the right amount of stops
+		while(len(truck.graphingPath) < edgeTime):
+			#set previous to the very first path
+			prev = truck.edgePath[0]
+			passer = 1
+			for set in truck.edgePath:
+				#skip the first set, it should not count
+				if (passer == 1):
+					passer = 0
 					continue
-				
-				prev = yt
-		#if len(self.graphingPath) < 2:
-			#print(truck.edgePath)
-			#try .005 forgiveness
-
+				else:
+					#Jump into it
+					#This gives the distance from the previous point in the edge to the next point in this edge
+					shortDist = World.pythag(self, prev, set)
+					sum = sum + shortDist
+					
+					if (sum + .005 >= multCheck):
+						overage = sum - multCheck
+						percentage = (shortDist - overage) / shortDist
+						#We should add a stop
+						#Now we need to add it knowing the percentage
+						#so first we find it
+						#this gives the point we add to our graph
+						#print("PERPER", percentage)
+						pointWeAdd = World.findPointToAdd(self, percentage, prev, set)
+						truck.graphingPath.append(pointWeAdd)
+						#print("graphingPath", truck.graphingPath, "pointWeAdd", pointWeAdd, "distance (edge time", edgeTime)
+						#testVar = pointWeAdd[1] + 7
+						multCheck = multCheck +  multiplier
+						break
+					prev = set
+				#now the node we're dealing with is the previous one		
+				prev = set
+		#now theat we're out of the while loop, append the last element, which should be the last set of points in edgePath
 		truck.graphingPath.append(truck.edgePath[len(truck.edgePath) - 1])
-		print("edge", truck.edgePath[len(truck.edgePath) - 1])
+		'''print("blue", truck.graphingPath, edgeTime, truck.graphingPath)
 
+		print("edge", truck.edgePath[len(truck.edgePath) - 1])
 		if (edgeTime != len(truck.graphingPath)):
-			print(truck.edgePath)
+			print("path for the edge", truck.edgePath)
 			print(edgeTime, len(truck.graphingPath), truck.graphingPath)
 			print("total amount", totalDistance)
 			paaa = asdkgha
-	
-		print("finishign")
+		'''
 		
 		return truck.graphingPath
 	
 
+	def determineHowManySplits(self, sum, multCheck):
+		sum = sum + .005
 		
-	def findPointToAdd(self, percentage, prevNode, endNode):
+		for ii in range(0, 10):
+			ii = 11- ii
+			if sum >= (multCheck * ii):
+				#this is how many splits we can use
+				return ii
+		return 0
+	
+	
+	def findPointToAdd(self, percentage, prevSet, nextSet):
 		#This is the total difference in x and y
-		minusX = endNode[0] - prevNode[0]
-		minusY = endNode[1] - prevNode[1]
+		minusX = nextSet[0] - prevSet[0]
+		minusY = nextSet[1] - prevSet[1]
+		print("minusX and percentage ", minusX, percentage)
 		xSegment = minusX * percentage
 		ySegment = minusY * percentage
-		newNode = [prevNode[0] + xSegment, prevNode[1] + ySegment]
-		return newNode
+		newSet = [prevSet[0] + xSegment, prevSet[1] + ySegment]
+		return newSet
 	
 		
 		
@@ -495,18 +361,15 @@ class World(AbstractWorld):
 		if loopCount == 3:
 			print("yeehaw")
 			return
-		if node1 == node2:
-			return 0
+		'''if node1 == node2:
+			return 0'''
 		for mine in self.Edges:
-			'''for any in self.truckList:
-				if any.status != 4:
-					print("TOTAL trucks")
-			'''
+
 			if ((mine[0] == node1) and (mine[1] == node2)) or ((mine[0] == node2) and (mine[1] == node1)):
 				answer = mine[2]
 				return mine[2]
 		loopCount = loopCount + 1
-		return 800
+		return 1
 		
 	def edgePath(self, node1, node2):
 		#RETURNS THE MANY X Y COORDINATES OF A PATH
@@ -526,7 +389,9 @@ class World(AbstractWorld):
 		sum = 0
 		prev = [0,0]
 		passer = 1
+	
 		prev = paths[0]
+				
 	
 		for at in paths:
 			if (passer == 1):
@@ -926,9 +791,6 @@ class World(AbstractWorld):
 		
 				#don't try to make a path from one vertex to the same one because it won't work, instead create a blank path
 				if(testVertex != y):
-					print("test vetex", testVertex)
-					print("current Node ", aTruck.currentNode)
-					print("omplete path ", aTruck.completePath)
 					quickGraph = graphObject.shortest_path2(testVertex, y, self.Edges)
 					skip = 0
 					#print("statement", quickGraph)
