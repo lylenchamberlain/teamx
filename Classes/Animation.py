@@ -15,6 +15,10 @@ class Animation():
         self.ogball = pygame.image.load("myTrucky.png")
         self.ball = pygame.transform.scale(self.ogball,(25,25))
         self.ballrect = self.ball.get_rect()
+        
+        self.ogParty = pygame.image.load("party.png")
+        self.party = pygame.transform.scale(self.ogParty, (150, 150))
+        self.partyrect = self.party.get_rect()
 
 
         self.status = 4 # 1 if moving to starting node, 2 if at starting node, #3 if moving to end node, 4 if done
@@ -61,8 +65,10 @@ class Animation():
         #path of the edges they need to follow
         self.edgePath = 0
         self.graphingPath = []
-        self.nextIndexTime = 0
+        self.nextGraphTime = 0
         self.graphingIndex = 0
+        self.stayStillX = 0
+        self.stayStillY = 0
 
 
         
