@@ -58,9 +58,11 @@ class Animation():
         self.distanceTraveled = 0
         self.distanceToTravel = 0
         self.distanceMultiplier = 0
+        #path of the edges they need to follow
         self.edgePath = 0
         self.graphingPath = []
         self.nextIndexTime = 0
+        self.graphingIndex = 0
 
 
         
