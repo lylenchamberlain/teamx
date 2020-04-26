@@ -279,7 +279,6 @@ class World(AbstractWorld):
 					if (sum >= (multiple * multiplier)):
 						appending = World.determinePointToAdd(self, truck, addOn, sum, multiplier, multiple, a, prevSet)
 						truck.graphingPath.append(appending)
-						print("aapending", appending, "edgeArray", edgeArray, "distance", length)
 						prevSet = a
 						multiplier = multiplier + 1
 						break
@@ -295,7 +294,6 @@ class World(AbstractWorld):
 		overLoad = sum - (multiplier * multiple)
 		#percentage of length to include
 		percentage = (addOn - overLoad) / addOn
-		print("percent ", percentage, addOn, overLoad)
 		xChunk = destination[0] - previous[0]
 		yChunk = destination[1] - previous[1]
 		xChunk = xChunk * percentage
@@ -324,7 +322,6 @@ class World(AbstractWorld):
 			else:
 				sum = sum + World.pythag(self, previousArray, p)
 				previousArray = p
-		print("SUM", sum, edgeArray)
 
 		return sum
 				
@@ -416,15 +413,11 @@ class World(AbstractWorld):
 		answer =  2000
 		
 		if loopCount == 3:
-			print("yeehaw")
 			return
 		if node1 == node2:
 			return 0
 		for mine in self.Edges:
-			'''for any in self.truckList:
-				if any.status != 4:
-					print("TOTAL trucks")
-			'''
+
 			if ((mine[0] == node1) and (mine[1] == node2)) or ((mine[0] == node2) and (mine[1] == node1)):
 				answer = mine[2]
 				return mine[2]
@@ -438,19 +431,14 @@ class World(AbstractWorld):
 		if node1 == node2:
 			return 0
 		for mine in self.Edges:
-			'''for any in self.truckList:
-				if any.status != 4:
-					print("TOTAL trucks")
-			'''
+
 			if ((mine[0] == node1) and (mine[1] == node2)) or ((mine[0] == node2) and (mine[1] == node1)):
 				answer = mine[3]
-				print("returning ", mine[3])
 				return mine[3]
 
 		return 800
 		
 	def calculateEdgeDistance(self, paths):
-		print('after', paths)
 		sum = 0
 		prev = [0,0]
 		passer = 1
@@ -463,8 +451,6 @@ class World(AbstractWorld):
 			else:
 				xdist = at[0] - prev[0]
 				ydist = at[1] - prev[1]
-				print("X", xdist, "y", ydist)
-				
 				sum = sum + ((xdist**2) + (ydist**2))**0.5
 	
 		return sum
@@ -527,7 +513,6 @@ class World(AbstractWorld):
 		return False
 		
 
-	#PRINT EDGES, verticies and timer
 	def printMap(self, t):
 		for item in range(len(self.Verticies)):
 			pygame.draw.rect(self.screen,(0,0,0),(800*self.Verticies[item][1],800*self.Verticies[item][2],10,10))
@@ -577,13 +562,10 @@ class World(AbstractWorld):
 	
 	def edgeToList(self, startNode, endNode):
 		
-		#print("Start and end node ", startNode, endNode)
 		for x in self.Edges:
 			if (x[0] == startNode and x[1] == endNode) or (x[1] == startNode and x[0] == endNode):
 				return x[3]
-			
-		print("ERROR")
-		
+					
 	def findProcessLine(self, type):
 		#Find the node of the process Line
 		lineArray = []
@@ -712,7 +694,6 @@ class World(AbstractWorld):
 			warehousesNeeded = World.findWarehouseArray(self, matNeeded)
 			#Make them both stops
 			currentTruck.stops.append(processLinesNeeded)
-			#print("PROSO", processLineNeeded)
 			currentTruck.stops.append(warehousesNeeded)
 			
 	
@@ -746,7 +727,6 @@ class World(AbstractWorld):
 			warehouseNeeded = World.findWarehouse(self, matNeeded)
 			#Make them both stops
 			currentTruck.stops.append(processLineNeeded)
-			#print("PROSO", processLineNeeded)
 			currentTruck.stops.append(warehouseNeeded)
 			
 	
@@ -818,7 +798,6 @@ class World(AbstractWorld):
 	def findLength(self, startNode, endNode):
 		for edgey in self.Edges:
 			if (edgey[0] == startNode) and (edgey[1] == endNode):
-				#print("EDGEY", startNode, endNode, edgey[0], edgey[1])
 				return edgey[2]
 		
 	def transportCost(self, aTruck):
@@ -875,7 +854,6 @@ class World(AbstractWorld):
 				if(testVertex != y):
 					quickGraph = graphObject.shortest_path2(testVertex, y, self.Edges)
 					skip = 0
-					#print("statement", quickGraph)
 				else:
 					#Don't route from the path we're at to the same one, create a graph of length 0, and skip the loop that trys to find a shorter loop
 					quickGraph = []
@@ -900,7 +878,6 @@ class World(AbstractWorld):
 						if y in aTruck.typeNeeded:
 							#If here it is a processLine and needs to check if the truck has the required warehouse materials
 							#first what type of resource does it need?
-							print(aTruck.typeNeeded)
 							
 						
 							theTypeNeeded = aTruck.typeNeeded[y]
